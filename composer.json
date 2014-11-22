@@ -3,8 +3,7 @@
   "description": "A movie/tv show organizer command line app.",
   "require": {
     "php": ">=5.6",
-    "symfony/console": "~2.0",
-    "symfony/process": "~2.0"
+    "symfony/console": "~2.0"
   },
   "license": "MIT",
   "authors": [
@@ -21,5 +20,6 @@
   "bin": [
     "kalista"
   ],
-  "minimum-stability": "stable"
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
