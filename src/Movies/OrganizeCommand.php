@@ -1,11 +1,14 @@
 <?php namespace Mabasic\Kalista\Movies;
 
+use Mabasic\Kalista\Traits\FilesystemTrait;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class OrganizeCommand extends Command {
+
+    use FilesystemTrait;
 
     /**
      * Configure the command options.
@@ -43,77 +46,39 @@ class OrganizeCommand extends Command {
         $this->organizeMovies($source, $destination, $output);
     }
 
-    private function organizeMovies($source, $destination, OutputInterface $output)
+    public function organizeMovies($source, $destination, OutputInterface $output)
     {
         $items = $this->scanDirectory($source);
 
         foreach ($items as $item)
         {
-            if (is_dir($source . '/' . $item))
+            $absolutePath = $source . '/' . $item;
+
+            if (is_dir($absolutePath))
             {
-                $this->organizeMovies($source . '/' . $item, $destination, $output);
+                $this->organizeMovies($absolutePath, $destination, $output);
 
                 continue;
             }
 
-            $target = $this->generateDirectoryPath($destination, $item);
+            // copy file to destination
+            $this->copyMovieToDestination(new Movie($item, $source), $destination);
 
-            $this->createDirectory($target);
-
-            $this->copyFileToDestination($source, $item, $target);
-
+            // write output to user
             $output->writeln($item);
         }
     }
 
     /**
-     * @param $destination
-     * @param $item
-     * @return mixed
-     */
-    public function generateDirectoryPath($destination, $item)
-    {
-        // If filename is already formatted
-        // return file name
-        $output = explode('[', $item)[0];
-
-        // If filename is not formatted
-        if($item == $output)
-        {
-            // Return file name without extension
-            $output = explode('.', $item)[0];
-        }
-
-        return $destination . '/' . $output;
-    }
-
-    /**
-     * @param $source
-     * @return array
-     */
-    public function scanDirectory($source)
-    {
-        return array_diff(scandir($source), array('..', '.'));
-    }
-
-    /**
-     * @param $source
-     * @param $item
+     * @param Movie $movie
      * @param $destination
      */
-    private function copyFileToDestination($source, $item, $destination)
+    public function copyMovieToDestination(Movie $movie, $destination)
     {
-        copy($source . '/' . $item, $destination . '/' . $item);
-    }
+        $target = $movie->getDestinationPath($destination);
 
-    /**
-     * @param $directoryPath
-     */
-    private function createDirectory($directoryPath)
-    {
-        if ( ! is_dir($directoryPath))
-        {
-            mkdir($directoryPath);
-        }
+        $this->createDirectory($target);
+
+        copy($movie->getFullPath(), $target . '/' . $movie->getFilename());
     }
 }
