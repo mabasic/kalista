@@ -26,7 +26,7 @@ class OrganizeCommand extends Command {
      */
     protected function configure()
     {
-        $this->setName('organize:movies')
+        $this->setName('movies:organize')
             ->addArgument(
                 'source',
                 InputArgument::REQUIRED,

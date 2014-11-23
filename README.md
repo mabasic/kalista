@@ -5,7 +5,7 @@ A movie/tv show organizer command line app.
 ## Installation
 
 ```
-composer global require "mabasic/kalista=0.1.*"
+composer global require "mabasic/kalista=0.2.*"
 ```
 
 ## Usage
@@ -17,10 +17,12 @@ php kalista organize:movies source destination
 **Example:**
 
 ```
-kalista organize:movies "H:\wd\public\Shared Videos" H:\wd\public\movies
+kalista movies:organize "H:\wd\public\Shared Videos" H:\wd\public\movies
 ```
 
 Would organize all movies from folder `Shared Videos` to folder `movies`.
+
+**Supported extensions are: .mp4, .avi, .mkv**
 
 **Source folder:**
 
