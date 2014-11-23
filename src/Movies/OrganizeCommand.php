@@ -8,35 +8,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class OrganizeCommand extends Command {
 
     /**
-     * @param $source
-     * @return array
-     */
-    public function scanDirectory($source)
-    {
-        return array_diff(scandir($source), array('..', '.'));
-    }
-
-    /**
-     * @param $item
-     * @return mixed
-     */
-    public function getDirectoryNameFromFile($item)
-    {
-        // If filename is already formatted
-        // return file name
-        $output = explode('[', $item)[0];
-
-        // If filename is not formatted
-        if($item == $output)
-        {
-            // Return file name without extension
-            $output = explode('.', $item)[0];
-        }
-
-        return $output;
-    }
-
-    /**
      * Configure the command options.
      *
      * @return void
@@ -70,9 +41,6 @@ class OrganizeCommand extends Command {
         $destination = $input->getArgument('destination');
 
         $this->organizeMovies($source, $destination, $output);
-
-
-
     }
 
     private function organizeMovies($source, $destination, OutputInterface $output)
@@ -83,26 +51,69 @@ class OrganizeCommand extends Command {
         {
             if (is_dir($source . '/' . $item))
             {
-                // TODO: Do recursive
-
-                //continue;
                 $this->organizeMovies($source . '/' . $item, $destination, $output);
 
                 continue;
             }
 
-            $directoryName = $this->getDirectoryNameFromFile($item);
+            $target = $this->generateDirectoryPath($destination, $item);
 
-            $directoryPath = $destination . '/' . $directoryName;
+            $this->createDirectory($target);
 
-            if ( ! is_dir($directoryPath))
-            {
-                mkdir($directoryPath);
-            }
-
-            copy($source . '/' . $item, $directoryPath . '/' . $item);
+            $this->copyFileToDestination($source, $item, $target);
 
             $output->writeln($item);
+        }
+    }
+
+    /**
+     * @param $destination
+     * @param $item
+     * @return mixed
+     */
+    public function generateDirectoryPath($destination, $item)
+    {
+        // If filename is already formatted
+        // return file name
+        $output = explode('[', $item)[0];
+
+        // If filename is not formatted
+        if($item == $output)
+        {
+            // Return file name without extension
+            $output = explode('.', $item)[0];
+        }
+
+        return $destination . '/' . $output;
+    }
+
+    /**
+     * @param $source
+     * @return array
+     */
+    public function scanDirectory($source)
+    {
+        return array_diff(scandir($source), array('..', '.'));
+    }
+
+    /**
+     * @param $source
+     * @param $item
+     * @param $destination
+     */
+    private function copyFileToDestination($source, $item, $destination)
+    {
+        copy($source . '/' . $item, $destination . '/' . $item);
+    }
+
+    /**
+     * @param $directoryPath
+     */
+    private function createDirectory($directoryPath)
+    {
+        if ( ! is_dir($directoryPath))
+        {
+            mkdir($directoryPath);
         }
     }
 }
