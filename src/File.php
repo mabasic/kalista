@@ -48,4 +48,9 @@ class File {
         return $this->path . '/' . $this->filename;
     }
 
+    public function getExtension()
+    {
+        return substr($this->filename, strrpos($this->filename, '.') + 1);
+    }
+
 }

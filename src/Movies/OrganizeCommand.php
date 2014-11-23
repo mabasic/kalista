@@ -10,6 +10,15 @@ class OrganizeCommand extends Command {
 
     use FilesystemTrait;
 
+    protected $allowed_extensions;
+
+    public function __construct(array $allowed_extensions)
+    {
+        $this->allowed_extensions = $allowed_extensions;
+
+        parent::__construct();
+    }
+
     /**
      * Configure the command options.
      *
@@ -50,22 +59,28 @@ class OrganizeCommand extends Command {
     {
         $items = $this->scanDirectory($source);
 
-        foreach ($items as $item)
+        $files = array_filter($items, function($item) use ($source)
         {
-            $absolutePath = $source . '/' . $item;
+            return ! is_dir($source . '/' . $item);
+        });
 
-            if (is_dir($absolutePath))
-            {
-                $this->organizeMovies($absolutePath, $destination, $output);
+        foreach($files as $file)
+        {
+            $movie = new Movie($file, $source);
 
-                continue;
-            }
+            if( ! in_array($movie->getExtension(), $this->allowed_extensions)) continue;
 
-            // copy file to destination
-            $this->copyMovieToDestination(new Movie($item, $source), $destination);
+            $this->copyMovieToDestination($movie, $destination);
 
-            // write output to user
-            $output->writeln($item);
+            $output->writeln($file);
+        }
+
+        $folders = array_diff($items, $files);
+
+        foreach($folders as $folder)
+        {
+            // Recursive
+            $this->organizeMovies($source . '/' . $folder, $destination, $output);
         }
     }
 
