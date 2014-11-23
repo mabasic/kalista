@@ -59,6 +59,7 @@ class OrganizeCommand extends Command {
     {
         $items = $this->scanDirectory($source);
 
+        // Separate files from folders
         $files = array_filter($items, function($item) use ($source)
         {
             return ! is_dir($source . '/' . $item);
@@ -67,7 +68,7 @@ class OrganizeCommand extends Command {
         foreach($files as $file)
         {
             $movie = new Movie($file, $source);
-
+            
             if( ! in_array($movie->getExtension(), $this->allowed_extensions)) continue;
 
             $this->copyMovieToDestination($movie, $destination);
