@@ -1,5 +1,7 @@
 # Kalista
 
+![](http://news.cdn.leagueoflegends.com/public/images/pages/kal/img/kal-ghost.png)
+
 A movie/tv show organizer command line app.
 
 ## Plans
@@ -108,3 +110,7 @@ Would organize all tv shows from folder `Shared TVShows` to folder `tvshows`.
 **Delimiter:**
 
 ` - ` is a delimiter.
+
+## Credits
+
+- The cool image with Kalista on top is from [Kalista, the Spear of Vengeance](http://na.leagueoflegends.com/en/champion-reveal/kalista-spear-vengeance-revealed) revealed website.
