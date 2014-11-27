@@ -19,4 +19,6 @@ $app = new Application('Kalista', '0.2.1');
 
 $app->add(new Mabasic\Kalista\Movies\OrganizeCommand(['avi', 'mp4', 'mkv']));
 
+$app->add(new Mabasic\Kalista\TVShows\OrganizeCommand(['avi', 'mp4', 'mkv']));
+
 $app->run();

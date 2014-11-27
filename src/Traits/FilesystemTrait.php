@@ -9,7 +9,7 @@ trait FilesystemTrait {
     {
         if ( ! is_dir($directoryPath))
         {
-            mkdir($directoryPath);
+            mkdir($directoryPath, 0777, true);
         }
     }
 
@@ -19,7 +19,7 @@ trait FilesystemTrait {
      */
     public function scanDirectory($source)
     {
-        return array_diff(scandir($source), ['..', '.']);
+        return array_diff(scandir($source), ['..', '.', 'Thumbs.db']);
     }
 
 }
