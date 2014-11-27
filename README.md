@@ -13,7 +13,7 @@ A movie/tv show organizer command line app.
 ## Installation
 
 ```
-composer global require "mabasic/kalista=0.2.*"
+composer global require "mabasic/kalista=0.3.*"
 ```
 
 ## Usage
