@@ -2,6 +2,12 @@
 
 A movie/tv show organizer command line app.
 
+## Plans
+
+- Consume some API to resolve tv shows and movies.
+- Improve code - there is a lot of space for this.
+
+
 ## Installation
 
 ```
@@ -10,8 +16,10 @@ composer global require "mabasic/kalista=0.2.*"
 
 ## Usage
 
+### Orrganize Movies
+
 ```
-php kalista organize:movies source destination
+php kalista movies:organize source destination
 ```
 
 **Example:**
@@ -59,3 +67,44 @@ Would produce: `10,000 BC`
 ```
 
 Would produce: `10,000 BC`
+
+### Orrganize TV shows
+
+```
+php kalista tvshows:organize source destination
+```
+
+**Example:**
+
+```
+kalista tvshows:organize "H:\wd\public\Shared TVShows" H:\wd\public\tvshows
+```
+
+Would organize all tv shows from folder `Shared TVShows` to folder `tvshows`.
+
+**Supported extensions are: .mp4, .avi, .mkv**
+
+**Source folder:**
+
+```
+[TV Show name - 2x04].[extension]
+[TV Show name - 2x05].[extension]
+[TV Show name - 2x06].[extension]
+[TV Show name - 2x07].[extension]
+[TV Show name - 2x08].[extension]
+```
+ 
+**Destination folder (output):**
+ 
+```
+[TV Show name]
+    Serie [Serie number]
+        [TV Show name].[extension]
+[TV Show name]
+    Serie [Serie number]
+        [TV Show name].[extension]
+```
+
+**Delimiter:**
+
+` - ` is a delimiter.
