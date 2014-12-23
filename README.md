@@ -1,5 +1,7 @@
 # Kalista
 
+[![Build Status](https://travis-ci.org/mabasic/kalista.svg)](https://travis-ci.org/mabasic/kalista) [![Latest Stable Version](https://poser.pugx.org/mabasic/kalista/v/stable.svg)](https://packagist.org/packages/mabasic/kalista) [![Total Downloads](https://poser.pugx.org/mabasic/kalista/downloads.svg)](https://packagist.org/packages/mabasic/kalista) [![Latest Unstable Version](https://poser.pugx.org/mabasic/kalista/v/unstable.svg)](https://packagist.org/packages/mabasic/kalista) [![License](https://poser.pugx.org/mabasic/kalista/license.svg)](https://packagist.org/packages/mabasic/kalista)
+
 ![](http://news.cdn.leagueoflegends.com/public/images/pages/kal/img/kal-ghost.png)
 
 A movie/tv show organizer command line app.
