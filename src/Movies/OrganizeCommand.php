@@ -12,6 +12,15 @@ class OrganizeCommand extends Command {
 
     protected $allowed_extensions;
 
+    protected $source;
+
+    protected $destination;
+
+    protected $output;
+
+    /**
+     * @param array $allowed_extensions
+     */
     public function __construct(array $allowed_extensions)
     {
         $this->allowed_extensions = $allowed_extensions;
@@ -49,52 +58,92 @@ class OrganizeCommand extends Command {
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $source = $input->getArgument('source');
-        $destination = $input->getArgument('destination');
+        $this->source = $input->getArgument('source');
+        $this->destination = $input->getArgument('destination');
+        $this->output = $output;
 
-        $this->organizeMovies($source, $destination, $output);
+        $this->organizeMovies($this->source);
     }
 
-    public function organizeMovies($source, $destination, OutputInterface $output)
+    /**
+     * @param $source
+     */
+    public function organizeMovies($source)
     {
         $items = $this->scanDirectory($source);
 
-        // Separate files from folders
-        $files = array_filter($items, function($item) use ($source)
-        {
-            return ! is_dir($source . '/' . $item);
-        });
+        $files = $this->filterFilesFromFolders($source, $items);
 
-        foreach($files as $file)
-        {
-            $movie = new Movie($file, $source);
-            
-            if( ! in_array($movie->getExtension(), $this->allowed_extensions)) continue;
+        $this->copyMoviesToDestination($source, $files);
 
-            $this->copyMovieToDestination($movie, $destination);
-
-            $output->writeln($file);
-        }
-
-        $folders = array_diff($items, $files);
-
-        foreach($folders as $folder)
-        {
-            // Recursive
-            $this->organizeMovies($source . '/' . $folder, $destination, $output);
-        }
+        $this->processFoldersRecursive($source, $items, $files);
     }
 
     /**
      * @param Movie $movie
-     * @param $destination
      */
-    public function copyMovieToDestination(Movie $movie, $destination)
+    public function copyMovieToDestination(Movie $movie)
     {
-        $target = $movie->getDestinationPath($destination);
+        $target = $movie->getDestinationPath($this->destination);
 
         $this->createDirectory($target);
 
         copy($movie->getFullPath(), $target . '/' . $movie->getFilename());
+    }
+
+    /**
+     * Returns an array of files from given items.
+     *
+     * @param $source
+     * @param $items
+     * @return array
+     */
+    private function filterFilesFromFolders($source, $items)
+    {
+        return array_filter($items, function ($item) use ($source)
+        {
+            return ! is_dir($source . '/' . $item);
+        });
+    }
+
+    /**
+     * Copies files from source to destination and writes to output.
+     * Before doing anything it checks if the file extension is allowed.
+     *
+     * @param $source
+     * @param $files
+     */
+    private function copyMoviesToDestination($source, $files)
+    {
+        foreach ($files as $file)
+        {
+            $movie = new Movie($file, $source);
+
+            if ( ! in_array($movie->getExtension(), $this->allowed_extensions)) continue;
+
+            $this->copyMovieToDestination($movie, $this->destination);
+
+            $this->output->writeln($file);
+        }
+    }
+
+    /**
+     * Given all items and files it finds folders and
+     * then it searches them for files and calls organize
+     * movies method.
+     *
+     * @param $source
+     * @param $items
+     * @param $files
+     */
+    private function processFoldersRecursive($source, $items, $files)
+    {
+        $folders = array_diff($items, $files);
+
+        foreach ($folders as $folder)
+        {
+            // Recursive
+            $this->organizeMovies($source . '/' . $folder);
+        }
     }
 }

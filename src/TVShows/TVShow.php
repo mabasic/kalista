@@ -1,7 +1,7 @@
 <?php  namespace Mabasic\Kalista\TVShows;
 
 use Mabasic\Kalista\File;
-use Mabasic\Kalista\TVShows\Exceptions\UnreadableTVShowInformationException;
+//use Mabasic\Kalista\TVShows\Exceptions\UnreadableTVShowInformationException;
 
 class TVShow extends File {
 
