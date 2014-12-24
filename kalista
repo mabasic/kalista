@@ -2,23 +2,25 @@
 
 <?php
 
+use Mabasic\Kalista\Services\FileBot\FileBot;
 use Symfony\Component\Console\Application;
 
-if (file_exists(__DIR__.'/vendor/autoload.php'))
+if (file_exists(__DIR__ . '/vendor/autoload.php'))
 {
     // For development purposes
-    require __DIR__.'/vendor/autoload.php';
-}
-else
+    require __DIR__ . '/vendor/autoload.php';
+} else
 {
     // This is important because of bin executable
-    require __DIR__.'/../../autoload.php';
+    require __DIR__ . '/../../autoload.php';
 }
 
 $app = new Application('Kalista', '0.4.2');
 
-$app->add(new Mabasic\Kalista\Movies\OrganizeCommand(['avi', 'mp4', 'mkv']));
+$allowed_extensions = ['avi', 'mp4', 'mkv'];
 
-$app->add(new Mabasic\Kalista\TVShows\OrganizeCommand(['avi', 'mp4', 'mkv']));
+$app->add(new Mabasic\Kalista\Movies\OrganizeCommand($allowed_extensions));
+
+$app->add(new Mabasic\Kalista\TVShows\OrganizeCommand($allowed_extensions));
 
 $app->run();

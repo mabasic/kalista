@@ -4,8 +4,99 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3fed680d4177df21b5cb8345b1167c6a",
+    "hash": "71783abcf48e4058fa2079c943ec22c2",
     "packages": [
+        {
+            "name": "illuminate/filesystem",
+            "version": "v4.2.16",
+            "target-dir": "Illuminate/Filesystem",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/filesystem.git",
+                "reference": "bf8e1443b956e2b87dc71f40035380fbc790f612"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/filesystem/zipball/bf8e1443b956e2b87dc71f40035380fbc790f612",
+                "reference": "bf8e1443b956e2b87dc71f40035380fbc790f612",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "4.2.*",
+                "php": ">=5.4.0",
+                "symfony/finder": "2.5.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Illuminate\\Filesystem": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "time": "2014-10-10 14:30:55"
+        },
+        {
+            "name": "illuminate/support",
+            "version": "v4.2.16",
+            "target-dir": "Illuminate/Support",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/support.git",
+                "reference": "015f51f4d8cb3d9a29e7fe7932843acf15232941"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/015f51f4d8cb3d9a29e7fe7932843acf15232941",
+                "reference": "015f51f4d8cb3d9a29e7fe7932843acf15232941",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "jeremeamia/superclosure": "~1.0.1",
+                "patchwork/utf8": "1.1.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Illuminate\\Support": ""
+                },
+                "files": [
+                    "Illuminate/Support/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "time": "2014-12-19 18:02:33"
+        },
         {
             "name": "symfony/console",
             "version": "v2.6.1",
@@ -62,6 +153,53 @@
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
             "time": "2014-12-02 20:19:20"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v2.5.8",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Finder.git",
+                "reference": "e5487b9a23adc4be228ac550100d89c50f1ee8d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/e5487b9a23adc4be228ac550100d89c50f1ee8d5",
+                "reference": "e5487b9a23adc4be228ac550100d89c50f1ee8d5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Finder\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-12-02 20:15:53"
         }
     ],
     "packages-dev": [
@@ -125,12 +263,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "686f85fa5b3b079cc0157d7cd3e9adb97f0b41e1"
+                "reference": "96a85965cb629b34a435fd84309eb9e2d59813c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/686f85fa5b3b079cc0157d7cd3e9adb97f0b41e1",
-                "reference": "686f85fa5b3b079cc0157d7cd3e9adb97f0b41e1",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/96a85965cb629b34a435fd84309eb9e2d59813c2",
+                "reference": "96a85965cb629b34a435fd84309eb9e2d59813c2",
                 "shasum": ""
             },
             "require": {
@@ -183,7 +321,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2014-12-22 10:06:19"
+            "time": "2014-12-24 14:49:24"
         },
         {
             "name": "phpunit/php-code-coverage",

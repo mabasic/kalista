@@ -6,16 +6,20 @@
 
 A movie/tv show organizer command line app.
 
-## Plans
+**IMPORTANT: Currently Kalista uses FileBot to rename movies, so be sure to have FileBot installed on your PC.**
 
-- Consume some API to resolve tv shows and movies.
-- Improve code - there is a lot of space for this.
+## Roadmap
+
+- [ ] Consume some API to resolve tv shows and movies.
+- [ ] Improve code - there is a lot of space for this.
+- [ ] Maybe stop using FileBot because the integration is missing.
+- [ ] I can do this better.
 
 
 ## Installation
 
 ```
-composer global require "mabasic/kalista=0.4.*"
+composer global require "mabasic/kalista=0.5.*"
 ```
 
 ## Usage
@@ -25,6 +29,8 @@ composer global require "mabasic/kalista=0.4.*"
 ```
 php kalista movies:organize source destination
 ```
+
+This command **moves** files from source to destination and cleans the source folder after.
 
 **Example:**
 

@@ -1,22 +1,25 @@
 <?php namespace Mabasic\Kalista\Movies;
 
-use Mabasic\Kalista\Traits\FilesystemTrait;
+use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\Services\FileBot\FileBot;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\SplFileInfo;
 
 class OrganizeCommand extends Command {
 
-    use FilesystemTrait;
-
     protected $allowed_extensions;
-
-    protected $source;
 
     protected $destination;
 
     protected $output;
+
+    protected $filebot;
+
+    protected $progress;
 
     /**
      * @param array $allowed_extensions
@@ -24,6 +27,8 @@ class OrganizeCommand extends Command {
     public function __construct(array $allowed_extensions)
     {
         $this->allowed_extensions = $allowed_extensions;
+        $this->filebot = new FileBot;
+        $this->filesystem = new Filesystem;
 
         parent::__construct();
     }
@@ -58,92 +63,112 @@ class OrganizeCommand extends Command {
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->source = $input->getArgument('source');
+        $source = $input->getArgument('source');
         $this->destination = $input->getArgument('destination');
         $this->output = $output;
 
-        $this->organizeMovies($this->source);
-    }
+        $files = $this->getFiles($source);
 
-    /**
-     * @param $source
-     */
-    public function organizeMovies($source)
-    {
-        $items = $this->scanDirectory($source);
+        $numberOfFiles = count($files);
 
-        $files = $this->filterFilesFromFolders($source, $items);
-
-        $this->copyMoviesToDestination($source, $files);
-
-        $this->processFoldersRecursive($source, $items, $files);
-    }
-
-    /**
-     * @param Movie $movie
-     */
-    public function copyMovieToDestination(Movie $movie)
-    {
-        $target = $movie->getDestinationPath($this->destination);
-
-        $this->createDirectory($target);
-
-        copy($movie->getFullPath(), $target . '/' . $movie->getFilename());
-    }
-
-    /**
-     * Returns an array of files from given items.
-     *
-     * @param $source
-     * @param $items
-     * @return array
-     */
-    private function filterFilesFromFolders($source, $items)
-    {
-        return array_filter($items, function ($item) use ($source)
+        if ($numberOfFiles > 0)
         {
-            return ! is_dir($source . '/' . $item);
+            $this->progress = new ProgressBar($output, $numberOfFiles);
+
+            $this->progress->start();
+        }
+
+        $this->filebot->renameMovies($files);
+
+        $files = $this->getFiles($source);
+
+        $this->moveMoviesToDestination($files);
+
+        // TODO: Why does this method do nothing???
+        $this->filesystem->cleanDirectory($source);
+
+        if ($numberOfFiles > 0)
+        {
+            $this->progress->finish();
+        } else
+        {
+            $this->output->writeln('There are no movies to be organized.');
+        }
+    }
+
+    private function getFolderNameForMovie(SplFileInfo $movie)
+    {
+        // If filename is already formatted
+        // return file name
+        $output = explode(' [', $movie->getFilename())[0];
+
+        // If filename is not formatted
+        if ($movie->getFilename() == $output)
+        {
+            // Return file name without extension
+            $output = explode('.', $movie->getFilename())[0];
+        }
+
+        return $output;
+    }
+
+    private function getFiles($source)
+    {
+        $files = $this->filesystem->allFiles($source);
+
+        $files = $this->filterSampleFiles($files);
+
+        return $this->filterAllowedExtensions($files);
+    }
+
+    private function filterAllowedExtensions($files)
+    {
+        return array_filter($files, function (SplFileInfo $file)
+        {
+            if ( ! in_array($file->getExtension(), $this->allowed_extensions)) return false;
+
+            return true;
+        });
+    }
+
+    private function filterSampleFiles($files)
+    {
+        return array_filter($files, function (SplFileInfo $file)
+        {
+            if (strpos($file->getFilename(), 'Sample') === false) return true;
+
+            return false;
         });
     }
 
     /**
-     * Copies files from source to destination and writes to output.
-     * Before doing anything it checks if the file extension is allowed.
-     *
-     * @param $source
-     * @param $files
+     * @param $folderPath
      */
-    private function copyMoviesToDestination($source, $files)
+    private function makeDirectory($folderPath)
     {
-        foreach ($files as $file)
+        if ( ! $this->filesystem->exists($folderPath))
         {
-            $movie = new Movie($file, $source);
-
-            if ( ! in_array($movie->getExtension(), $this->allowed_extensions)) continue;
-
-            $this->copyMovieToDestination($movie, $this->destination);
-
-            $this->output->writeln($file);
+            $this->filesystem->makeDirectory($folderPath);
         }
     }
 
     /**
-     * Given all items and files it finds folders and
-     * then it searches them for files and calls organize
-     * movies method.
-     *
-     * @param $source
-     * @param $items
      * @param $files
      */
-    private function processFoldersRecursive($source, $items, $files)
+    private function moveMoviesToDestination($files)
     {
-        $folders = array_diff($items, $files);
-
-        foreach ($folders as $folder)
+        array_walk($files, function (SplFileInfo $file)
         {
-            // Recursive
-            $this->organizeMovies($source . '/' . $folder);
-        }
+            $destinationFolder = $this->destination . '\\' . $this->getFolderNameForMovie($file);
+
+            $this->makeDirectory($destinationFolder);
+
+
+            $destinationMoviePath = $destinationFolder . '\\' . $file->getFilename();
+
+            $this->filesystem->move($file->getPathname(), $destinationMoviePath);
+
+            $this->progress->advance();
+        });
     }
 }
