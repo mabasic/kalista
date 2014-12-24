@@ -15,7 +15,7 @@ else
     require __DIR__.'/../../autoload.php';
 }
 
-$app = new Application('Kalista', '0.4.1');
+$app = new Application('Kalista', '0.4.2');
 
 $app->add(new Mabasic\Kalista\Movies\OrganizeCommand(['avi', 'mp4', 'mkv']));
 
