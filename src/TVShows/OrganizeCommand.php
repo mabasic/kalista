@@ -1,24 +1,16 @@
 <?php namespace Mabasic\Kalista\TVShows;
 
-use Mabasic\Kalista\Traits\FilesystemTrait;
+use Mabasic\Kalista\Command;
+use Mabasic\Kalista\TVShows\Exceptions\UnreadableTVShowInformationException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\SplFileInfo;
 
 class OrganizeCommand extends Command {
 
-    use FilesystemTrait;
-
-    protected $allowed_extensions;
-
-    public function __construct(array $allowed_extensions)
-    {
-        $this->allowed_extensions = $allowed_extensions;
-
-        parent::__construct();
-    }
+    protected $progress;
 
     /**
      * Configure the command options.
@@ -50,6 +42,8 @@ class OrganizeCommand extends Command {
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->progress = new ProgressBar($output);
+
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
 
@@ -58,52 +52,62 @@ class OrganizeCommand extends Command {
 
     public function organizeTVShows($source, $destination, OutputInterface $output)
     {
-        $items = $this->scanDirectory($source);
+        $files = $this->getFiles($source);
 
-        // Separate files from folders
-        $files = array_filter($items, function($item) use ($source)
+        $numberOfFiles = count($files);
+
+        if ($numberOfFiles == 0)
         {
-            return ! is_dir($source . '/' . $item);
-        });
-
-        $progress = new ProgressBar($output, count($files));
-
-        $progress->start();
-
-        foreach($files as $file)
-        {
-            $tvShow = new TVShow($file, $source);
-
-            if( ! in_array($tvShow->getExtension(), $this->allowed_extensions)) continue;
-
-            $this->copyTVShowToDestination($tvShow, $destination);
-
-            $progress->advance();
-
-            //$output->writeln($file);
+            return $output->writeln('There are no TVShows to be organized.');
         }
 
-        $progress->finish();
+        $this->progress->start($numberOfFiles);
 
-        $folders = array_diff($items, $files);
+        $this->filebot->renameTVShows($files);
 
-        foreach($folders as $folder)
-        {
-            // Recursive
-            $this->organizeTVShows($source . '/' . $folder, $destination, $output);
-        }
+        $files = $this->getFiles($source);
+
+        $this->moveTVShowsToDestination($files, $destination);
+
+        // TODO: Why does this method do nothing???
+        $this->filesystem->cleanDirectory($source);
+
+        $this->progress->finish();
     }
 
-    /**
-     * @param TVShow $tvShow
-     * @param $destination
-     */
-    public function copyTVShowToDestination(TVShow $tvShow, $destination)
+    private function moveTVShowsToDestination($files, $destination)
     {
-        $target = $tvShow->getDestinationPath($destination);
+        array_walk($files, function (SplFileInfo $file) use ($destination)
+        {
+            $destinationFolder = $destination . '\\' . $this->getFolderNameForTVShow($file);
 
-        $this->createDirectory($target);
+            $this->makeDirectory($destinationFolder);
 
-        copy($tvShow->getFullPath(), $target . '/' . $tvShow->getFilename());
+
+            $destinationMoviePath = $destinationFolder . '\\' . $file->getFilename();
+
+            $this->filesystem->move($file->getPathname(), $destinationMoviePath);
+
+            $this->progress->advance();
+        });
+    }
+
+    private function getFolderNameForTVShow(SplFileInfo $tvShow)
+    {
+        $exploded = explode(' - ', $tvShow->getFilename());
+
+        if(count($exploded) != 3)
+        {
+            throw new UnreadableTVShowInformationException($tvShow->getFilename());
+        }
+
+        $season = explode('x', $exploded[1]);
+
+        $season = $season[0];
+        //$episode = $season[1];
+        //$episodeTitle = $exploded[2];
+        $tvShowTitle = $exploded[0];
+
+        return $tvShowTitle . '\\Season ' . $season;
     }
 }

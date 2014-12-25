@@ -63,7 +63,7 @@ class Command extends SymfonyCommand {
     {
         if ( ! $this->filesystem->exists($folderPath))
         {
-            $this->filesystem->makeDirectory($folderPath);
+            $this->filesystem->makeDirectory($folderPath, 0755, true);
         }
     }
 }

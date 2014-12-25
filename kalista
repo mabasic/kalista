@@ -16,7 +16,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php'))
     require __DIR__ . '/../../autoload.php';
 }
 
-$app = new Application('Kalista', '0.6.0');
+$app = new Application('Kalista', '0.7.0');
 
 $allowed_extensions = ['avi', 'mp4', 'mkv'];
 
@@ -25,6 +25,6 @@ $filesystem = new Filesystem;
 
 $app->add(new Mabasic\Kalista\Movies\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
 
-$app->add(new Mabasic\Kalista\TVShows\OrganizeCommand($allowed_extensions));
+$app->add(new Mabasic\Kalista\TVShows\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
 
 $app->run();

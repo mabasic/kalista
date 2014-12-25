@@ -13,8 +13,20 @@ class FileBot {
     {
         foreach($files as $file)
         {
-            //var_dump($file);
             $this->renameMovie($file);
+        }
+    }
+
+    public function renameTVShow(SplFileInfo $tvShow, $database = 'TheTVDB', $format = '{n} - {sxe} - {t}')
+    {
+        exec("filebot --format " . '"' . $format . '"' . " -rename " . '"' . $tvShow->getPathname() . '"' . " --db {$database} -non-strict");
+    }
+
+    public function renameTVShows($files)
+    {
+        foreach($files as $file)
+        {
+            $this->renameTVShow($file);
         }
     }
 }

@@ -11,15 +11,13 @@ A movie/tv show organizer command line app.
 ## Roadmap
 
 - [ ] Consume some API to resolve tv shows and movies.
-- [ ] Improve code - there is a lot of space for this.
 - [ ] Maybe stop using FileBot because the integration is missing.
-- [ ] I can do this better.
 
 
 ## Installation
 
 ```
-composer global require "mabasic/kalista=0.6.*"
+composer global require "mabasic/kalista=0.7.*"
 ```
 
 ## Usage

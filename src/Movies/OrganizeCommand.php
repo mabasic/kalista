@@ -49,43 +49,6 @@ class OrganizeCommand extends Command {
         $this->organizeMovies($source, $destination, $output);
     }
 
-    private function getFolderNameForMovie(SplFileInfo $movie)
-    {
-        // If filename is already formatted
-        // return file name
-        $output = explode(' [', $movie->getFilename())[0];
-
-        // If filename is not formatted
-        if ($movie->getFilename() == $output)
-        {
-            // Return file name without extension
-            $output = explode('.', $movie->getFilename())[0];
-        }
-
-        return $output;
-    }
-
-    /**
-     * @param $files
-     * @param $destination
-     */
-    private function moveMoviesToDestination($files, $destination)
-    {
-        array_walk($files, function (SplFileInfo $file) use ($destination)
-        {
-            $destinationFolder = $destination . '\\' . $this->getFolderNameForMovie($file);
-
-            $this->makeDirectory($destinationFolder);
-
-
-            $destinationMoviePath = $destinationFolder . '\\' . $file->getFilename();
-
-            $this->filesystem->move($file->getPathname(), $destinationMoviePath);
-
-            $this->progress->advance();
-        });
-    }
-
     private function organizeMovies($source, $destination, OutputInterface $output)
     {
         $files = $this->getFiles($source);
@@ -109,5 +72,42 @@ class OrganizeCommand extends Command {
         $this->filesystem->cleanDirectory($source);
 
         $this->progress->finish();
+    }
+
+    /**
+     * @param $files
+     * @param $destination
+     */
+    private function moveMoviesToDestination($files, $destination)
+    {
+        array_walk($files, function (SplFileInfo $file) use ($destination)
+        {
+            $destinationFolder = $destination . '\\' . $this->getFolderNameForMovie($file);
+
+            $this->makeDirectory($destinationFolder);
+
+
+            $destinationMoviePath = $destinationFolder . '\\' . $file->getFilename();
+
+            $this->filesystem->move($file->getPathname(), $destinationMoviePath);
+
+            $this->progress->advance();
+        });
+    }
+
+    private function getFolderNameForMovie(SplFileInfo $movie)
+    {
+        // If filename is already formatted
+        // return file name
+        $output = explode(' [', $movie->getFilename())[0];
+
+        // If filename is not formatted
+        if ($movie->getFilename() == $output)
+        {
+            // Return file name without extension
+            $output = explode('.', $movie->getFilename())[0];
+        }
+
+        return $output;
     }
 }
