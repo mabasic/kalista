@@ -15,7 +15,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php'))
     require __DIR__ . '/../../autoload.php';
 }
 
-$app = new Application('Kalista', '0.4.2');
+$app = new Application('Kalista', '0.5.1');
 
 $allowed_extensions = ['avi', 'mp4', 'mkv'];
 
