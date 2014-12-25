@@ -1,37 +1,15 @@
 <?php namespace Mabasic\Kalista\Movies;
 
-use Illuminate\Filesystem\Filesystem;
-use Mabasic\Kalista\Services\FileBot\FileBot;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\SplFileInfo;
+use Mabasic\Kalista\Command;
 
 class OrganizeCommand extends Command {
 
-    protected $allowed_extensions;
-
-    protected $destination;
-
-    protected $output;
-
-    protected $filebot;
-
     protected $progress;
-
-    /**
-     * @param array $allowed_extensions
-     */
-    public function __construct(array $allowed_extensions)
-    {
-        $this->allowed_extensions = $allowed_extensions;
-        $this->filebot = new FileBot;
-        $this->filesystem = new Filesystem;
-
-        parent::__construct();
-    }
 
     /**
      * Configure the command options.
@@ -51,7 +29,7 @@ class OrganizeCommand extends Command {
                 InputArgument::REQUIRED,
                 'Destination folder where organized files are stored.'
             )
-            ->setDescription('Movies movies from one folder in another folder in separate folders.');
+            ->setDescription('Moves movies from one folder in another folder in separate folders.');
     }
 
     /**
@@ -63,37 +41,12 @@ class OrganizeCommand extends Command {
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->progress = new ProgressBar($output);
+
         $source = $input->getArgument('source');
-        $this->destination = $input->getArgument('destination');
-        $this->output = $output;
+        $destination = $input->getArgument('destination');
 
-        $files = $this->getFiles($source);
-
-        $numberOfFiles = count($files);
-
-        if ($numberOfFiles > 0)
-        {
-            $this->progress = new ProgressBar($output, $numberOfFiles);
-
-            $this->progress->start();
-        }
-
-        $this->filebot->renameMovies($files);
-
-        $files = $this->getFiles($source);
-
-        $this->moveMoviesToDestination($files);
-
-        // TODO: Why does this method do nothing???
-        $this->filesystem->cleanDirectory($source);
-
-        if ($numberOfFiles > 0)
-        {
-            $this->progress->finish();
-        } else
-        {
-            $this->output->writeln('There are no movies to be organized.');
-        }
+        $this->organizeMovies($source, $destination, $output);
     }
 
     private function getFolderNameForMovie(SplFileInfo $movie)
@@ -112,54 +65,15 @@ class OrganizeCommand extends Command {
         return $output;
     }
 
-    private function getFiles($source)
-    {
-        $files = $this->filesystem->allFiles($source);
-
-        $files = $this->filterSampleFiles($files);
-
-        return $this->filterAllowedExtensions($files);
-    }
-
-    private function filterAllowedExtensions($files)
-    {
-        return array_filter($files, function (SplFileInfo $file)
-        {
-            if ( ! in_array($file->getExtension(), $this->allowed_extensions)) return false;
-
-            return true;
-        });
-    }
-
-    private function filterSampleFiles($files)
-    {
-        return array_filter($files, function (SplFileInfo $file)
-        {
-            if (strpos($file->getFilename(), 'Sample') === false) return true;
-
-            return false;
-        });
-    }
-
-    /**
-     * @param $folderPath
-     */
-    private function makeDirectory($folderPath)
-    {
-        if ( ! $this->filesystem->exists($folderPath))
-        {
-            $this->filesystem->makeDirectory($folderPath);
-        }
-    }
-
     /**
      * @param $files
+     * @param $destination
      */
-    private function moveMoviesToDestination($files)
+    private function moveMoviesToDestination($files, $destination)
     {
-        array_walk($files, function (SplFileInfo $file)
+        array_walk($files, function (SplFileInfo $file) use ($destination)
         {
-            $destinationFolder = $this->destination . '\\' . $this->getFolderNameForMovie($file);
+            $destinationFolder = $destination . '\\' . $this->getFolderNameForMovie($file);
 
             $this->makeDirectory($destinationFolder);
 
@@ -170,5 +84,30 @@ class OrganizeCommand extends Command {
 
             $this->progress->advance();
         });
+    }
+
+    private function organizeMovies($source, $destination, OutputInterface $output)
+    {
+        $files = $this->getFiles($source);
+
+        $numberOfFiles = count($files);
+
+        if ($numberOfFiles == 0)
+        {
+            return $output->writeln('There are no movies to be organized.');
+        }
+
+        $this->progress->start($numberOfFiles);
+
+        $this->filebot->renameMovies($files);
+
+        $files = $this->getFiles($source);
+
+        $this->moveMoviesToDestination($files, $destination);
+
+        // TODO: Why does this method do nothing???
+        $this->filesystem->cleanDirectory($source);
+
+        $this->progress->finish();
     }
 }

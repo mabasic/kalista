@@ -2,6 +2,7 @@
 
 <?php
 
+use Illuminate\Filesystem\Filesystem;
 use Mabasic\Kalista\Services\FileBot\FileBot;
 use Symfony\Component\Console\Application;
 
@@ -15,11 +16,14 @@ if (file_exists(__DIR__ . '/vendor/autoload.php'))
     require __DIR__ . '/../../autoload.php';
 }
 
-$app = new Application('Kalista', '0.5.1');
+$app = new Application('Kalista', '0.6.0');
 
 $allowed_extensions = ['avi', 'mp4', 'mkv'];
 
-$app->add(new Mabasic\Kalista\Movies\OrganizeCommand($allowed_extensions));
+$filebot = new FileBot;
+$filesystem = new Filesystem;
+
+$app->add(new Mabasic\Kalista\Movies\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
 
 $app->add(new Mabasic\Kalista\TVShows\OrganizeCommand($allowed_extensions));
 
