@@ -24,6 +24,7 @@ $filebot = new FileBot;
 $filesystem = new Filesystem;
 
 $app->add(new Mabasic\Kalista\Movies\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
+$app->add(new Mabasic\Kalista\Movies\RenameCommand($allowed_extensions, $filebot, $filesystem));
 
 $app->add(new Mabasic\Kalista\TVShows\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
 
