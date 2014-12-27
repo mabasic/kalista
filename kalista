@@ -3,7 +3,13 @@
 <?php
 
 use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\Movies\OrganizeCommand as OrganizeMovieCommand;
+use Mabasic\Kalista\Movies\RenameCommand as RenameMovieCommand;
+use Mabasic\Kalista\TVShows\OrganizeCommand as OrganizeTvShowCommand;
+use Mabasic\Kalista\Providers\TheMovieDBServiceProvider;
+use Mabasic\Kalista\Services\Environmental\Environmental;
 use Mabasic\Kalista\Services\FileBot\FileBot;
+use Mabasic\Kalista\Services\TheMovieDB\Movies;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php'))
@@ -16,16 +22,22 @@ if (file_exists(__DIR__ . '/vendor/autoload.php'))
     require __DIR__ . '/../../autoload.php';
 }
 
-$app = new Application('Kalista', '0.7.0');
+$app = new Application('Kalista', '0.9.0');
 
 $allowed_extensions = ['avi', 'mp4', 'mkv'];
 
 $filebot = new FileBot;
 $filesystem = new Filesystem;
 
-$app->add(new Mabasic\Kalista\Movies\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
-$app->add(new Mabasic\Kalista\Movies\RenameCommand($allowed_extensions, $filebot, $filesystem));
+$environmental = new Environmental($filesystem);
+$theMovieDBServiceProvider = new TheMovieDBServiceProvider($environmental);
+$moviesApi = new Movies($theMovieDBServiceProvider);
 
-$app->add(new Mabasic\Kalista\TVShows\OrganizeCommand($allowed_extensions, $filebot, $filesystem));
+// TODO: Remove filebot
+
+$app->add(new OrganizeMovieCommand($allowed_extensions, $filebot, $filesystem, $moviesApi));
+$app->add(new RenameMovieCommand($allowed_extensions, $filebot, $filesystem, $moviesApi));
+
+$app->add(new OrganizeTvShowCommand($allowed_extensions, $filebot, $filesystem));
 
 $app->run();

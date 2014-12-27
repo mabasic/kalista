@@ -1,15 +1,26 @@
 <?php namespace Mabasic\Kalista\Movies;
 
+use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\Services\FileBot\FileBot;
+use Mabasic\Kalista\Services\TheMovieDB\Movies;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\SplFileInfo;
 use Mabasic\Kalista\Command;
 
 class OrganizeCommand extends Command {
 
     protected $progress;
+
+    protected $moviesApi;
+
+    public function __construct(array $allowed_extensions, FileBot $filebot, Filesystem $filesystem, Movies $moviesApi)
+    {
+        $this->moviesApi = $moviesApi;
+
+        parent::__construct($allowed_extensions, $filebot, $filesystem);
+    }
 
     /**
      * Configure the command options.
@@ -51,20 +62,9 @@ class OrganizeCommand extends Command {
 
     private function organizeMovies($source, $destination, OutputInterface $output)
     {
-        $files = $this->getFiles($source);
+        $files = $this->renameMovies($source, $output, $this->moviesApi);
 
-        $numberOfFiles = count($files);
-
-        if ($numberOfFiles == 0)
-        {
-            return $output->writeln('There are no movies to be organized.');
-        }
-
-        $this->progress->start($numberOfFiles);
-
-        $this->filebot->renameMovies($files);
-
-        $files = $this->getFiles($source);
+        $this->progress->start(count($files));
 
         $this->moveMoviesToDestination($files, $destination);
 
@@ -80,32 +80,32 @@ class OrganizeCommand extends Command {
      */
     private function moveMoviesToDestination($files, $destination)
     {
-        array_walk($files, function (SplFileInfo $file) use ($destination)
+        array_walk($files, function (Movie $file) use ($destination)
         {
             $destinationFolder = $destination . '\\' . $this->getFolderNameForMovie($file);
 
             $this->makeDirectory($destinationFolder);
 
 
-            $destinationMoviePath = $destinationFolder . '\\' . $file->getFilename();
+            $destinationMoviePath = $destinationFolder . '\\' . $file->getModifiedFilename();
 
-            $this->filesystem->move($file->getPathname(), $destinationMoviePath);
+            $this->filesystem->move($file->getModifiedPath(), $destinationMoviePath);
 
             $this->progress->advance();
         });
     }
 
-    private function getFolderNameForMovie(SplFileInfo $movie)
+    private function getFolderNameForMovie(Movie $movie)
     {
         // If filename is already formatted
         // return file name
-        $output = explode(' [', $movie->getFilename())[0];
+        $output = explode(' [', $movie->getModifiedFilename())[0];
 
         // If filename is not formatted
-        if ($movie->getFilename() == $output)
+        if ($movie->getModifiedFilename() == $output)
         {
             // Return file name without extension
-            $output = explode('.', $movie->getFilename())[0];
+            $output = explode('.', $movie->getModifiedFilename())[0];
         }
 
         return $output;

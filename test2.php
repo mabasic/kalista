@@ -20,7 +20,8 @@ $tvshows = [
     'person.of.interest.410.hdtv-lol.mp4',
 ];
 
-$environmental = new Environmental(new Filesystem, '.env.php');
+//, '.env.php'
+$environmental = new Environmental(new Filesystem);
 $tmdb = new Movies(new TheMovieDBServiceProvider($environmental));
 
 foreach ($movies as $movie)

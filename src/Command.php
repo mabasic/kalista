@@ -1,8 +1,11 @@
 <?php namespace Mabasic\Kalista;
 
 use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\Movies\Movie;
 use Mabasic\Kalista\Services\FileBot\FileBot;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\SplFileInfo;
 
 class Command extends SymfonyCommand {
@@ -56,6 +59,14 @@ class Command extends SymfonyCommand {
         return $this->filterAllowedExtensions($files);
     }
 
+    public function getMappedFiles($files)
+    {
+        return array_map(function($file)
+        {
+            return new Movie($file);
+        }, $files);
+    }
+
     /**
      * @param $folderPath
      */
@@ -80,18 +91,78 @@ class Command extends SymfonyCommand {
 
         $output = join(' ', $words);
 
-        var_dump($output);
-
         return $output;
     }
 
     protected function cleanFilenameForMovie($filename)
     {
-        return $this->cleanFilename($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|2014|410/i");
+        return $this->cleanFilename($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|2014/i");
     }
 
     protected function cleanFilenameForTvShow($filename)
     {
         return $this->cleanFilename($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|[0-9]/i");
+    }
+
+    protected function renameFiles($files)
+    {
+        array_walk($files, function(Movie $file)
+        {
+            $this->renameFile($file);
+        });
+    }
+
+    protected function renameFile(Movie $file)
+    {
+        if ($file->title === null ||
+            ! $this->filesystem->move(
+                $file->file->getPathname(),
+                $file->getModifiedPath())
+        ) return false;
+
+        $file->renamed = true;
+        return true;
+    }
+
+    protected function renameMovies($source, OutputInterface $output, $moviesApi)
+    {
+        $files = $this->getFiles($source);
+
+        $files = $this->getMappedFiles($files);
+
+        array_walk($files, function (Movie $file) use ($moviesApi)
+        {
+            $title = $this->cleanFilenameForMovie($file->file->getFilename());
+
+            $file->setTitle($moviesApi->getMovieTitle($title));
+        });
+
+        $this->renameFiles($files);
+
+        $table = new Table($output);
+
+        $table->setHeaders(array('Old', 'New', 'Cleaned', 'Renamed'))
+            ->setRows($this->createRowsForMovies($files));
+
+        $table->render();
+
+        return $files;
+    }
+
+    protected function createRowsForMovies($files)
+    {
+        $rows = [];
+
+        foreach ($files as $file)
+        {
+            $rows[] = [
+                $file->file->getFilename(),
+                $file->title,
+                $file->cleaned,
+                $file->renamed
+            ];
+        }
+
+        return $rows;
     }
 }

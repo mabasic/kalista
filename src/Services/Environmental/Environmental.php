@@ -9,7 +9,7 @@ class Environmental {
 
     protected $environmentFile;
 
-    public function __construct(Filesystem $filesystem, $environmentFile = '../../../.env.php')
+    public function __construct(Filesystem $filesystem, $environmentFile = '.env.php')
     {
         $this->filesystem = $filesystem;
         $this->environmentFile = $environmentFile;

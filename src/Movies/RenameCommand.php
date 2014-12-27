@@ -1,15 +1,26 @@
 <?php namespace Mabasic\Kalista\Movies;
 
+use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\Services\FileBot\FileBot;
+use Mabasic\Kalista\Services\TheMovieDB\Movies;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\SplFileInfo;
 use Mabasic\Kalista\Command;
 
 class RenameCommand extends Command {
 
     protected $progress;
+
+    protected $moviesApi;
+
+    public function __construct(array $allowed_extensions, FileBot $filebot, Filesystem $filesystem, Movies $moviesApi)
+    {
+        $this->moviesApi = $moviesApi;
+
+        parent::__construct($allowed_extensions, $filebot, $filesystem);
+    }
 
     /**
      * Configure the command options.
@@ -23,11 +34,6 @@ class RenameCommand extends Command {
                 'source',
                 InputArgument::REQUIRED,
                 'Source folder of movies to be renamed.'
-            )
-            ->addArgument(
-                'database',
-                InputArgument::OPTIONAL,
-                'Database to be used for resolving movie names.'
             )
             ->setDescription('Fetches movies names and renames files.');
     }
@@ -44,32 +50,8 @@ class RenameCommand extends Command {
         $this->progress = new ProgressBar($output);
 
         $source = $input->getArgument('source');
-        $database = $input->getArgument('database');
 
-        $this->renameMovies($source, $database, $output);
+        $this->renameMovies($source, $output, $this->moviesApi);
     }
 
-    private function renameMovies($source, $database, OutputInterface $output)
-    {
-        $files = $this->getFiles($source);
-
-        $numberOfFiles = count($files);
-
-        if ($numberOfFiles == 0)
-        {
-            return $output->writeln('There are no movies to be renamed.');
-        }
-
-        if ($database !== null)
-        {
-            $this->filebot->renameMovies($files, $database);
-        }
-        else
-        {
-            $this->filebot->renameMovies($files);
-        }
-
-        $output->writeln('All movies are most likely renamed successfully.');
-
-    }
 }
