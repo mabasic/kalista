@@ -6,3 +6,6 @@ vendor/
 
 # For testing purposes
 arena/
+
+
+*.env.php
