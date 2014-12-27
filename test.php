@@ -15,7 +15,7 @@ $tvshows = [
     'person.of.interest.410.hdtv-lol.mp4',
 ];
 
-include_once('.local.env.php');
+include_once('.env.php');
 
 //$token = new \Tmdb\ApiToken('replace_with_your_api_key');
 $token = new \Tmdb\ApiToken($tmdb_api_key);

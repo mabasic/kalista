@@ -66,4 +66,32 @@ class Command extends SymfonyCommand {
             $this->filesystem->makeDirectory($folderPath, 0755, true);
         }
     }
+
+    private function cleanFilename($filename, $regex)
+    {
+        $value = preg_replace('(\\[.*?\\])', '', $filename);
+
+        $words = preg_split('/[.]/', $value);
+
+        $words = array_filter($words, function ($word) use ($regex)
+        {
+            return ! (preg_match($regex, $word));
+        });
+
+        $output = join(' ', $words);
+
+        var_dump($output);
+
+        return $output;
+    }
+
+    protected function cleanFilenameForMovie($filename)
+    {
+        return $this->cleanFilename($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|2014|410/i");
+    }
+
+    protected function cleanFilenameForTvShow($filename)
+    {
+        return $this->cleanFilename($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|[0-9]/i");
+    }
 }
