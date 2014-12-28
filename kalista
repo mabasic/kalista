@@ -41,3 +41,28 @@ $app->add(new RenameMovieCommand($allowed_extensions, $filebot, $filesystem, $mo
 $app->add(new OrganizeTvShowCommand($allowed_extensions, $filebot, $filesystem));
 
 $app->run();
+
+// What does it do ???
+
+/**
+ *
+ * focus on TheMovieDB api for movies and tvshows.
+ *
+ * Fetcher
+ * - fetch movie or tvshow info from tmdb api.
+ *
+ * Renamer
+ * - renames movies or tvshows in filesystem.
+ *
+ * Cleaner
+ * - cleans filename to get clean movie or tvshow name.
+ *
+ * Mover
+ * - moves movies or tvshows from one location to another.
+ *
+
+ * FilesystemHelper
+ * - filters (removes) found files based on specific rules
+ * - helper methods for manipulating files
+ *
+ */

@@ -26,8 +26,7 @@ class Movie {
         if ($title === false)
         {
             $this->title = null;
-        }
-        else
+        } else
         {
             $this->title = $title;
             $this->cleaned = true;
