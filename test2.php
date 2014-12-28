@@ -1,51 +1,51 @@
 <?php
 
+use Mabasic\Kalista\Services\TheMovieDB\TheMovieDB;
+
 require __DIR__ . '/vendor/autoload.php';
 
-use Illuminate\Filesystem\Filesystem;
-use Mabasic\Kalista\Providers\TheMovieDBServiceProvider;
-use Mabasic\Kalista\Services\Environmental\Environmental;
-use Mabasic\Kalista\Services\TheMovieDB\Movies;
 
-$movies = [
-    'Horrible Bosses 2 [2014, R, 7.0].avi',
-    'Penguins.of.Madagascar.2014.HC.HDRip.XViD-juggs[ETRG].avi',
-    'Dumb.and.Dumber.To.2014.HC.HDRip.XviD.AC3-EVO.avi'
-];
+class Movie {
 
-$tvshows = [
-    'anger.management.287.hdtv-lol.mp4',
-    'ncis.1210.hdtv-lol.mp4',
-    'once.upon.a.time.412.hdtv-lol.mp4',
-    'person.of.interest.410.hdtv-lol.mp4',
-];
+    protected $title = null;
 
-//, '.env.php'
-$environmental = new Environmental(new Filesystem);
-$tmdb = new Movies(new TheMovieDBServiceProvider($environmental));
+    protected $file;
 
-foreach ($movies as $movie)
-{
-    $title = getSearchReadyFilename($movie);
+    public function __construct(SplFileInfo $file)
+    {
+        $this->file = $file;
+    }
 
-    var_dump($tmdb->getMovieTitle($title));
 
 }
 
-function getSearchReadyFilename($filename)
-{
-    $value = preg_replace('(\\[.*?\\])', '', $filename);
+class MovieCollection {
 
-    $words = preg_split('/[.]/', $value);
+    protected $movies = [];
 
-    $words = array_filter($words, function ($word)
+    public function add($movies)
     {
-        return ! (preg_match("/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|2014|410/i", $word));
-    });
+        if (is_array($movies))
+        {
+            return $this->addMovies($movies);
+        }
 
-    $output = join(' ', $words);
+        $this->movies[] = $movies;
 
-    var_dump($output);
+        return $this;
+    }
 
-    return $output;
+    private function addMovies($movies)
+    {
+        foreach ($movies as $movie)
+        {
+            if ( ! $movie instanceof Movie)
+                throw new Exception;
+
+            $this->add($movie);
+        }
+
+        return $this;
+    }
+
 }

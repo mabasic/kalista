@@ -14,9 +14,7 @@ class Movies extends TheMovieDB {
 
     public function getMovieRepositoryByTitle($title)
     {
-        $results = $this->searchMoviesByTitle($title);
-
-        $results = $results->get('results');
+        $results = $this->searchMoviesByTitle($title)->get('results');
 
         if (count($results) == 0) return false;
 

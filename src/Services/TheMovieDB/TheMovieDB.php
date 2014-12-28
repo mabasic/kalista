@@ -10,4 +10,5 @@ class TheMovieDB {
     {
         $this->theMovieDB = $theMovieDBServiceProvider->register();
     }
+
 }

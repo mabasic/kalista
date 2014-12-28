@@ -10,21 +10,19 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Command extends SymfonyCommand {
 
-    protected $allowed_extensions;
+    protected $allowedExtensions;
 
     protected $filebot;
 
     protected $filesystem;
 
     /**
-     * @param array $allowed_extensions
-     * @param FileBot $filebot
+     * @param array $allowedExtensions
      * @param Filesystem $filesystem
      */
-    public function __construct(array $allowed_extensions, FileBot $filebot, Filesystem $filesystem)
+    public function __construct(array $allowedExtensions, Filesystem $filesystem)
     {
-        $this->allowed_extensions = $allowed_extensions;
-        $this->filebot = $filebot;
+        $this->allowedExtensions = $allowedExtensions;
         $this->filesystem = $filesystem;
 
         parent::__construct();
@@ -54,6 +52,23 @@ class Command extends SymfonyCommand {
 
     protected function renameMovies($source, OutputInterface $output, $moviesApi)
     {
+        // What do i want to do in as few steps as possible?
+
+        // 1. get movies from source
+        //  - get files
+        //      - filter extensions
+        //      - filter exclusions
+        //  - convert file to movie
+        //  - convert files to movie collection
+        //  - fetch movie name for each movie
+        //  - return only movies that have been resolved
+
+        // 2. rename source files
+        // - rename filename to match movie name in filesystem
+
+        // 3. show output
+        //  - show table output
+
         $files = $this->getFiles($source);
 
         $files = $this->getMappedFiles($files);
@@ -74,6 +89,19 @@ class Command extends SymfonyCommand {
 
         $table->render();
 
+        //$this->outputTable()
+
         return $files;
+    }
+
+    public function outputTable($headers, $rows, OutputInterface $output)
+    {
+        $table = new Table($output);
+
+        $table
+            ->setHeaders($headers)
+            ->setRows($rows);
+
+        $table->render();
     }
 }
