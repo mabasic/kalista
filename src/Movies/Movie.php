@@ -46,5 +46,8 @@ class Movie {
         return $this->file->getPath() . '\\' . $this->getModifiedFilename();
     }
 
-
+    public function getTitle()
+    {
+        return $this->title;
+    }
 }

@@ -80,9 +80,9 @@ class OrganizeCommand extends Command {
      */
     private function moveMoviesToDestination($files, $destination)
     {
-        array_walk($files, function (Movie $file) use ($destination)
+        array_walk($this->getRenamedMoviesOnly($files), function (Movie $file) use ($destination)
         {
-            $destinationFolder = $destination . '\\' . $this->getFolderNameForMovie($file);
+            $destinationFolder = $destination . '\\' . $file->getTitle();
 
             $this->makeDirectory($destinationFolder);
 
@@ -93,21 +93,5 @@ class OrganizeCommand extends Command {
 
             $this->progress->advance();
         });
-    }
-
-    private function getFolderNameForMovie(Movie $movie)
-    {
-        // If filename is already formatted
-        // return file name
-        $output = explode(' [', $movie->getModifiedFilename())[0];
-
-        // If filename is not formatted
-        if ($movie->getModifiedFilename() == $output)
-        {
-            // Return file name without extension
-            $output = explode('.', $movie->getModifiedFilename())[0];
-        }
-
-        return $output;
     }
 }

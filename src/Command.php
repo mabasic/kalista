@@ -165,4 +165,18 @@ class Command extends SymfonyCommand {
 
         return $rows;
     }
+
+    /**
+     * @param $files
+     * @return array
+     */
+    protected function getRenamedMoviesOnly($files)
+    {
+        $files = array_filter($files, function (Movie $movie)
+        {
+            return $movie->cleaned;
+        });
+
+        return $files;
+    }
 }
