@@ -1,19 +1,11 @@
-<?php namespace Mabasic\Kalista\Movies;
+<?php  namespace Mabasic\Kalista\Movies;
 
-use Mabasic\Kalista\Core\FilenameCleaner;
+use Mabasic\Kalista\Cleaners\FilenameCleaner;
 
 class MovieFilenameCleaner extends FilenameCleaner {
 
-
-    /**
-     * Cleans given movie filename with provided regex.
-     *
-     * @param $filename
-     * @return string
-     */
-    public function cleanMovieFilename($filename)
+    public function clean($filename)
     {
-        return $this->cleanFilename($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|2014/i");
+        return $this->prepare($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|2014/i");
     }
-
 }

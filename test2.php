@@ -1,51 +1,11 @@
 <?php
 
-use Mabasic\Kalista\Services\TheMovieDB\TheMovieDB;
-
 require __DIR__ . '/vendor/autoload.php';
 
+$filesystem = new \Illuminate\Filesystem\Filesystem();
 
-class Movie {
+//var_dump($filesystem->glob('*.php'));
 
-    protected $title = null;
-
-    protected $file;
-
-    public function __construct(SplFileInfo $file)
-    {
-        $this->file = $file;
-    }
+var_dump(glob("/arena/mixed/*.{jpg,gif,png}", GLOB_BRACE));
 
 
-}
-
-class MovieCollection {
-
-    protected $movies = [];
-
-    public function add($movies)
-    {
-        if (is_array($movies))
-        {
-            return $this->addMovies($movies);
-        }
-
-        $this->movies[] = $movies;
-
-        return $this;
-    }
-
-    private function addMovies($movies)
-    {
-        foreach ($movies as $movie)
-        {
-            if ( ! $movie instanceof Movie)
-                throw new Exception;
-
-            $this->add($movie);
-        }
-
-        return $this;
-    }
-
-}

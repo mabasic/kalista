@@ -1,7 +1,6 @@
-<?php namespace Mabasic\Kalista\Core;
+<?php  namespace Mabasic\Kalista\Cleaners;
 
-class FilenameCleaner {
-
+abstract class FilenameCleaner implements Cleaner {
 
     /**
      * Cleans filename of common characters and given regex.
@@ -11,7 +10,7 @@ class FilenameCleaner {
      * @param $regex
      * @return string
      */
-    public function cleanFilename($filename, $regex)
+    public function prepare($filename, $regex)
     {
         $value = preg_replace('(\\[.*?\\])', '', $filename);
 
@@ -24,5 +23,4 @@ class FilenameCleaner {
 
         return join(' ', $words);
     }
-
 }

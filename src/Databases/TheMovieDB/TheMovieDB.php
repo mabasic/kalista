@@ -1,8 +1,9 @@
-<?php namespace Mabasic\Kalista\Services\TheMovieDB;
+<?php namespace Mabasic\Kalista\Databases\TheMovieDB;
 
+use Mabasic\Kalista\Databases\Database;
 use Mabasic\Kalista\Providers\TheMovieDBServiceProvider;
 
-class TheMovieDB {
+abstract class TheMovieDB implements Database {
 
     protected $theMovieDB;
 

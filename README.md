@@ -6,8 +6,6 @@
 
 A movie/tv show organizer command line app.
 
-**IMPORTANT: Currently Kalista uses FileBot to rename movies, so be sure to have FileBot installed on your PC.**
-
 ## Roadmap
 
 - [ ] Consume some API to resolve tv shows and movies.
@@ -17,7 +15,7 @@ A movie/tv show organizer command line app.
 ## Installation
 
 ```
-composer global require "mabasic/kalista=0.9.*"
+composer global require "mabasic/kalista=0.10.*"
 ```
 
 ## Usage

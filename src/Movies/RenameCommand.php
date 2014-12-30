@@ -1,26 +1,13 @@
 <?php namespace Mabasic\Kalista\Movies;
 
-use Illuminate\Filesystem\Filesystem;
-use Mabasic\Kalista\Services\FileBot\FileBot;
-use Mabasic\Kalista\Services\TheMovieDB\Movies;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Mabasic\Kalista\Databases\TheMovieDB\MovieDatabase;
+use Mabasic\Kalista\Providers\TheMovieDBServiceProvider;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Mabasic\Kalista\Command;
 
 class RenameCommand extends Command {
-
-    protected $progress;
-
-    protected $moviesApi;
-
-    public function __construct(array $allowed_extensions, FileBot $filebot, Filesystem $filesystem, Movies $moviesApi)
-    {
-        $this->moviesApi = $moviesApi;
-
-        parent::__construct($allowed_extensions, $filebot, $filesystem);
-    }
 
     /**
      * Configure the command options.
@@ -35,6 +22,11 @@ class RenameCommand extends Command {
                 InputArgument::REQUIRED,
                 'Source folder of movies to be renamed.'
             )
+            ->addArgument(
+                'database',
+                InputArgument::OPTIONAL,
+                'Database to be used for name resolution. The default is TheMovieDB.'
+            )
             ->setDescription('Fetches movies names and renames files.');
     }
 
@@ -47,11 +39,22 @@ class RenameCommand extends Command {
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->progress = new ProgressBar($output);
-
         $source = $input->getArgument('source');
 
-        $this->renameMovies($source, $output, $this->moviesApi);
+        $database = $this->getDatabase($input->getArgument('database'));
+
+        $this->renameMovies($source, $output, $database);
+    }
+
+    private function getDatabase($database)
+    {
+        /*if($database == 'xy')
+        {
+            return new
+        }*/
+
+        // The default = TheMovieDB
+        return new MovieDatabase(new TheMovieDBServiceProvider($this->environmental));
     }
 
 }

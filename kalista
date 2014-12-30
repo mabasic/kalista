@@ -3,13 +3,11 @@
 <?php
 
 use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\Mappers\FileMapper;
 use Mabasic\Kalista\Movies\OrganizeCommand as OrganizeMovieCommand;
 use Mabasic\Kalista\Movies\RenameCommand as RenameMovieCommand;
 use Mabasic\Kalista\TVShows\OrganizeCommand as OrganizeTvShowCommand;
-use Mabasic\Kalista\Providers\TheMovieDBServiceProvider;
 use Mabasic\Kalista\Services\Environmental\Environmental;
-use Mabasic\Kalista\Services\FileBot\FileBot;
-use Mabasic\Kalista\Services\TheMovieDB\Movies;
 use Symfony\Component\Console\Application;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php'))
@@ -22,47 +20,15 @@ if (file_exists(__DIR__ . '/vendor/autoload.php'))
     require __DIR__ . '/../../autoload.php';
 }
 
-$app = new Application('Kalista', '0.9.0');
+$app = new Application('Kalista', '0.10.0');
 
-$allowed_extensions = ['avi', 'mp4', 'mkv'];
-
-$filebot = new FileBot;
 $filesystem = new Filesystem;
-
 $environmental = new Environmental($filesystem);
-$theMovieDBServiceProvider = new TheMovieDBServiceProvider($environmental);
-$moviesApi = new Movies($theMovieDBServiceProvider);
+$fileMapper = new FileMapper;
 
-// TODO: Remove filebot
+//$app->add(new OrganizeMovieCommand($allowed_extensions, $filebot, $filesystem, $moviesApi));
+$app->add(new RenameMovieCommand($filesystem, $environmental, $fileMapper));
 
-$app->add(new OrganizeMovieCommand($allowed_extensions, $filebot, $filesystem, $moviesApi));
-$app->add(new RenameMovieCommand($allowed_extensions, $filebot, $filesystem, $moviesApi));
-
-$app->add(new OrganizeTvShowCommand($allowed_extensions, $filebot, $filesystem));
+//$app->add(new OrganizeTvShowCommand($allowed_extensions, $filebot, $filesystem));
 
 $app->run();
-
-// What does it do ???
-
-/**
- *
- * focus on TheMovieDB api for movies and tvshows.
- *
- * Fetcher
- * - fetch movie or tvshow info from tmdb api.
- *
- * Renamer
- * - renames movies or tvshows in filesystem.
- *
- * Cleaner
- * - cleans filename to get clean movie or tvshow name.
- *
- * Mover
- * - moves movies or tvshows from one location to another.
- *
-
- * FilesystemHelper
- * - filters (removes) found files based on specific rules
- * - helper methods for manipulating files
- *
- */

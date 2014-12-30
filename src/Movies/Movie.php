@@ -1,52 +1,50 @@
 <?php namespace Mabasic\Kalista\Movies;
 
-use Symfony\Component\Finder\SplFileInfo;
+use Mabasic\Kalista\Cleaners\Cleaner;
+use Mabasic\Kalista\VideoFile;
+use SplFileInfo;
 
-class Movie {
+class Movie implements VideoFile {
 
-    public $file;
+    protected $name;
 
-    public $cleaned = false;
+    protected $file;
 
-    public $title;
+    protected $cleaner;
 
-    public $renamed;
-
-    public function __construct(SplFileInfo $file)
+    public function __construct(SplFileInfo $file, Cleaner $cleaner)
     {
         $this->file = $file;
+        $this->cleaner = $cleaner;
     }
 
-    /**
-     * @param mixed $title
-     * @return $this
-     */
-    public function setTitle($title)
+    public function getName()
     {
-        if ($title === false)
-        {
-            $this->title = null;
-        } else
-        {
-            $this->title = $title;
-            $this->cleaned = true;
-        }
-
-        return $this;
+        return $this->name;
     }
 
-    public function getModifiedFilename()
+    public function setName($name)
     {
-        return $this->title . '.' . $this->file->getExtension();
+        $this->name = $name;
     }
 
-    public function getModifiedPath()
+    public function getCleanedFilename()
     {
-        return $this->file->getPath() . '\\' . $this->getModifiedFilename();
+        return $this->cleaner->clean($this->file->getFilename());
     }
 
-    public function getTitle()
+    public function file()
     {
-        return $this->title;
+        return $this->file;
+    }
+
+    public function getPathname()
+    {
+        return $this->file->getPath() . '\\' . $this->getFilename();
+    }
+
+    public function getFilename()
+    {
+        return $this->name . '.' . $this->file->getExtension();
     }
 }

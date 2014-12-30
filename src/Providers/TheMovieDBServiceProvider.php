@@ -4,7 +4,7 @@ use Mabasic\Kalista\Services\Environmental\Environmental;
 use Tmdb\ApiToken;
 use Tmdb\Client;
 
-class TheMovieDBServiceProvider {
+class TheMovieDBServiceProvider implements ServiceProvider {
 
     protected $environmental;
 

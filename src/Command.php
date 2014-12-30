@@ -1,97 +1,61 @@
 <?php namespace Mabasic\Kalista;
 
 use Illuminate\Filesystem\Filesystem;
-use Mabasic\Kalista\Movies\Movie;
-use Mabasic\Kalista\Services\FileBot\FileBot;
+use Mabasic\Kalista\Databases\Database;
+use Mabasic\Kalista\Mappers\Mapper;
+use Mabasic\Kalista\Movies\MovieCollection;
+use Mabasic\Kalista\Movies\MovieFilenameCleaner;
+use Mabasic\Kalista\Services\Environmental\Environmental;
+use Mabasic\Kalista\Traits\FilesystemHelper;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\SplFileInfo;
 
 class Command extends SymfonyCommand {
 
-    protected $allowedExtensions;
-
-    protected $filebot;
+    use FilesystemHelper;
 
     protected $filesystem;
 
-    /**
-     * @param array $allowedExtensions
-     * @param Filesystem $filesystem
-     */
-    public function __construct(array $allowedExtensions, Filesystem $filesystem)
-    {
-        $this->allowedExtensions = $allowedExtensions;
-        $this->filesystem = $filesystem;
+    protected $environmental;
 
+    protected $mapper;
+
+    public function __construct(Filesystem $filesystem, Environmental $environmental, Mapper $mapper)
+    {
+        $this->filesystem = $filesystem;
+        $this->environmental = $environmental;
+        $this->mapper = $mapper;
+
+        // Call SymfonyCommand constructor
         parent::__construct();
     }
 
-
-    protected function renameFiles($files)
-    {
-        array_walk($files, function (Movie $file)
-        {
-            $this->renameFile($file);
-        });
-    }
-
-    protected function renameFile(Movie $file)
-    {
-        if ($file->title === null ||
-            ! $this->filesystem->move(
-                $file->file->getPathname(),
-                $file->getModifiedPath())
-        ) return false;
-
-        $file->renamed = true;
-
-        return true;
-    }
-
-    protected function renameMovies($source, OutputInterface $output, $moviesApi)
+    protected function renameMovies($source, OutputInterface $output, Database $database)
     {
         // What do i want to do in as few steps as possible?
 
-        // 1. get movies from source
-        //  - get files
-        //      - filter extensions
-        //      - filter exclusions
-        //  - convert file to movie
-        //  - convert files to movie collection
-        //  - fetch movie name for each movie
-        //  - return only movies that have been resolved
-
-        // 2. rename source files
-        // - rename filename to match movie name in filesystem
-
-        // 3. show output
-        //  - show table output
+        /**
+         * filesystem helper get files (allowed and without sample files
+         *
+         * Map files to Movies
+         *
+         * fetch movie names using database
+         *
+         * rename files using filesystem helper
+         *
+         * output table
+         */
 
         $files = $this->getFiles($source);
 
-        $files = $this->getMappedFiles($files);
+        $movies = $this->mapper->mapFiles($files, 'Mabasic\Kalista\Movies\Movie', new MovieFilenameCleaner);
 
-        array_walk($files, function (Movie $file) use ($moviesApi)
-        {
-            $title = $this->cleanFilenameForMovie($file->file->getFilename());
+        $moviesCollection = (new MovieCollection($movies))->fetchMovieNames($database);
 
-            $file->setTitle($moviesApi->getMovieTitle($title));
-        });
+        $this->renameFiles($moviesCollection->getCollection());
 
-        $this->renameFiles($files);
-
-        $table = new Table($output);
-
-        $table->setHeaders(array('Old', 'New', 'Cleaned', 'Renamed'))
-            ->setRows($this->createRowsForMovies($files));
-
-        $table->render();
-
-        //$this->outputTable()
-
-        return $files;
+        $this->outputTable($moviesCollection->getHeaders(), $moviesCollection->getRows(), $output);
     }
 
     public function outputTable($headers, $rows, OutputInterface $output)
