@@ -7,6 +7,8 @@ use Mabasic\Kalista\Movies\MovieCollection;
 use Mabasic\Kalista\Movies\MovieFilenameCleaner;
 use Mabasic\Kalista\Services\Environmental\Environmental;
 use Mabasic\Kalista\Traits\FilesystemHelper;
+use Mabasic\Kalista\TvShows\TvShowEpisodeCollection;
+use Mabasic\Kalista\TvShows\TvShowEpisodeFilenameCleaner;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,6 +58,19 @@ class Command extends SymfonyCommand {
         $this->renameFiles($moviesCollection->getCollection());
 
         $this->outputTable($moviesCollection->getHeaders(), $moviesCollection->getRows(), $output);
+    }
+
+    protected function renameTvShowEpisodes($source, $output, $database)
+    {
+        $files = $this->getFiles($source);
+
+        $tvShowEpisodes = $this->mapper->mapFiles($files, 'Mabasic\Kalista\TvShows\TvShowEpisode', new TvShowEpisodeFilenameCleaner);
+
+        $tvShowEpisodesCollection = (new TvShowEpisodeCollection($tvShowEpisodes))->fetchTvShowEpisodeInfo($database);
+
+        $this->renameFiles($tvShowEpisodesCollection->getCollection());
+
+        $this->outputTable($tvShowEpisodesCollection->getHeaders(), $tvShowEpisodesCollection->getRows(), $output);
     }
 
     public function outputTable($headers, $rows, OutputInterface $output)
