@@ -1,5 +1,6 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
+use Mabasic\Kalista\Cleaners\Cleaner;
 use Mabasic\Kalista\VideoFile;
 use SplFileInfo;
 
@@ -13,7 +14,7 @@ class TvShowEpisode implements VideoFile {
 
     protected $showName;
 
-    public function __construct(SplFileInfo $file, TvShowEpisodeFilenameCleaner $cleaner)
+    public function __construct(SplFileInfo $file, Cleaner $cleaner)
     {
         $this->file = $file;
         $this->cleaner = $cleaner;
@@ -36,7 +37,9 @@ class TvShowEpisode implements VideoFile {
 
     public function getCleanedFilenameWithNumbers()
     {
-        return $this->cleaner->getOnlySeasonAndEpisodeNumbers($this->file->getFilename(), "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264/i");
+        $filename = $this->cleaner->prepare($this->file->getFilename(), "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264/i");
+
+        return preg_replace('/[aA-zZ]| /i', '', $filename);
     }
 
     public function file()

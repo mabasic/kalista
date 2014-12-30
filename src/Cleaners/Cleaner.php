@@ -4,4 +4,6 @@ interface Cleaner {
 
     public function clean($string);
 
+    public function prepare($filename, $regex);
+
 }
