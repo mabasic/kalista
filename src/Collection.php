@@ -10,4 +10,6 @@ interface Collection {
 
     public function getRows();
 
+    public function remove($index);
+
 }

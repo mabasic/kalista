@@ -1,5 +1,6 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
+use Exception;
 use Mabasic\Kalista\Cleaners\Cleaner;
 use Mabasic\Kalista\VideoFile;
 use SplFileInfo;
@@ -32,6 +33,11 @@ class TvShowEpisode implements VideoFile {
 
     public function getCleanedFilename()
     {
+        $clean = $this->cleaner->clean($this->file->getFilename());
+
+        if($clean == "")
+            throw new Exception("{$this->file->getFilename()} cannot be cleaned.");
+
         return $this->cleaner->clean($this->file->getFilename());
     }
 
@@ -49,12 +55,13 @@ class TvShowEpisode implements VideoFile {
 
     public function getPathname()
     {
-        return $this->file->getPath() . '\\' . $this->getFilename();
+        //return $this->file->getPath() . '\\Season ' . $this->getSeason() . '\\' . $this->getFilename();
+        return "{$this->file->getPath()}\\{$this->getFilename()}";
     }
 
     public function getFilename()
     {
-        return $this->name . '.' . $this->file->getExtension();
+        return "{$this->showName} - {$this->getSeason()}x{$this->getEpisodeNumber()} - {$this->name}.{$this->file->getExtension()}";
     }
 
     public function getSeason()
@@ -65,7 +72,7 @@ class TvShowEpisode implements VideoFile {
 
         $season = array_slice(str_split($cleanedFilename), 0, $middle);
 
-        return implode('', $season);
+        return (int) implode('', $season);
     }
 
     public function getEpisodeNumber()
@@ -76,7 +83,7 @@ class TvShowEpisode implements VideoFile {
 
         $episode = array_slice(str_split($cleanedFilename), $middle);
 
-        return implode('', $episode);
+        return (int) implode('', $episode);
     }
 
     public function setShowName($name)

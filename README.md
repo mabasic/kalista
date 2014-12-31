@@ -6,12 +6,6 @@
 
 A movie/tv show organizer command line app.
 
-## Roadmap
-
-- [ ] Consume some API to resolve tv shows and movies.
-- [ ] Maybe stop using FileBot because the integration is missing.
-
-
 ## Installation
 
 ```

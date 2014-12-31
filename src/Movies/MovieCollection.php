@@ -3,6 +3,7 @@
 use Exception;
 use Mabasic\Kalista\Collection;
 use Mabasic\Kalista\Databases\Database;
+use Mabasic\Kalista\VideoFile;
 
 class MovieCollection implements Collection {
 
@@ -74,5 +75,10 @@ class MovieCollection implements Collection {
         }
 
         return $rows;
+    }
+
+    public function remove($index)
+    {
+        // TODO: Implement remove() method.
     }
 }

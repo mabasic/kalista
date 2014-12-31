@@ -60,7 +60,7 @@ class Command extends SymfonyCommand {
         $this->outputTable($moviesCollection->getHeaders(), $moviesCollection->getRows(), $output);
     }
 
-    protected function renameTvShowEpisodes($source, $output, $database)
+    protected function renameTvShowEpisodes($source, OutputInterface $output, $database)
     {
         $files = $this->getFiles($source);
 
@@ -70,7 +70,14 @@ class Command extends SymfonyCommand {
 
         $this->renameFiles($tvShowEpisodesCollection->getCollection());
 
-        $this->outputTable($tvShowEpisodesCollection->getHeaders(), $tvShowEpisodesCollection->getRows(), $output);
+        if (count($tvShowEpisodesCollection->getCollection()) == 0)
+        {
+            $output->writeln('The are no files to rename.');
+        }
+        else
+        {
+            $this->outputTable($tvShowEpisodesCollection->getHeaders(), $tvShowEpisodesCollection->getRows(), $output);
+        }
     }
 
     public function outputTable($headers, $rows, OutputInterface $output)

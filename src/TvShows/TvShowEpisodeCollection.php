@@ -2,7 +2,6 @@
 
 use Exception;
 use Mabasic\Kalista\Collection;
-use Mabasic\Kalista\Databases\Database;
 use Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase;
 
 class TvShowEpisodeCollection implements Collection {
@@ -44,11 +43,23 @@ class TvShowEpisodeCollection implements Collection {
 
     public function fetchTvShowEpisodeInfo(TvShowEpisodeDatabase $database)
     {
-        array_walk($this->tvShowEpisodes, function(TvShowEpisode $tvShowEpisode) use ($database)
+        $counter = 0;
+
+        foreach($this->tvShowEpisodes as $tvShowEpisode)
         {
-            $tvShowEpisode->setName($database->getName($tvShowEpisode));
-            $tvShowEpisode->setShowName($database->getShowName($tvShowEpisode));
-        });
+            try
+            {
+                $tvShowEpisode->setName($database->getName($tvShowEpisode));
+                $tvShowEpisode->setShowName($database->getShowName($tvShowEpisode));
+            }
+            catch(Exception $e)
+            {
+                // TODO: I need to inform the user that these files were not processed.
+                $this->remove($counter);
+            }
+
+            $counter++;
+        }
 
         return $this;
     }
@@ -60,7 +71,7 @@ class TvShowEpisodeCollection implements Collection {
 
     public function getHeaders()
     {
-        return ['Filename', 'TvShowEpisode Name', 'TvShow Name'];
+        return ['Filename', 'Episode Name', 'Episode number', 'Show Name', 'Season'];
     }
 
     public function getRows()
@@ -72,10 +83,17 @@ class TvShowEpisodeCollection implements Collection {
             $rows[] = [
                 $tvShowEpisode->file()->getFilename(),
                 $tvShowEpisode->getName(),
-                $tvShowEpisode->getShowName()
+                $tvShowEpisode->getEpisodeNumber(),
+                $tvShowEpisode->getShowName(),
+                $tvShowEpisode->getSeason()
             ];
         }
 
         return $rows;
+    }
+
+    public function remove($index)
+    {
+        unset($this->tvShowEpisodes[$index]);
     }
 }
