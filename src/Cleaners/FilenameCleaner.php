@@ -1,6 +1,6 @@
 <?php  namespace Mabasic\Kalista\Cleaners;
 
-use Exception;
+use Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException;
 
 abstract class FilenameCleaner implements Cleaner {
 
@@ -11,7 +11,7 @@ abstract class FilenameCleaner implements Cleaner {
      * @param $filename
      * @param $regex
      * @return string
-     * @throws Exception
+     * @throws FilenameNotCleanedException
      */
     public function prepare($filename, $regex)
     {
@@ -27,7 +27,7 @@ abstract class FilenameCleaner implements Cleaner {
         $output = join(' ', $words);
 
         if($output == "")
-            throw new Exception("Could not clean filename: {$filename}");
+            throw new FilenameNotCleanedException("Could not clean filename: {$filename}");
 
         return $output;
     }

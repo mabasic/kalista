@@ -2,7 +2,9 @@
 
 use Exception;
 use Mabasic\Kalista\Collection;
+use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
 use Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase;
+use Mabasic\Kalista\TvShows\Exceptions\TvShowEpisodeRequiredException;
 
 class TvShowEpisodeCollection implements Collection {
 
@@ -21,7 +23,7 @@ class TvShowEpisodeCollection implements Collection {
         }
 
         if ( ! $tvShowEpisodes instanceof TvShowEpisode)
-            throw new Exception('Not a TvShowEpisode!');
+            throw new TvShowEpisodeRequiredException('Not a TvShowEpisode!');
 
         $this->tvShowEpisodes[] = $tvShowEpisodes;
 
@@ -33,7 +35,7 @@ class TvShowEpisodeCollection implements Collection {
         foreach ($tvShowEpisodes as $tvShowEpisode)
         {
             if ( ! $tvShowEpisode instanceof TvShowEpisode)
-                throw new Exception('Not a TvShowEpisode!');
+                throw new TvShowEpisodeRequiredException('Not a TvShowEpisode!');
 
             $this->add($tvShowEpisode);
         }
@@ -52,9 +54,10 @@ class TvShowEpisodeCollection implements Collection {
                 $tvShowEpisode->setName($database->getName($tvShowEpisode));
                 $tvShowEpisode->setShowName($database->getShowName($tvShowEpisode));
             }
-            catch(Exception $e)
+            catch(TvShowEpisodeNotFoundException $e)
             {
                 // TODO: I need to inform the user that these files were not processed.
+                // Maybe PubSub or something.
                 $this->remove($counter);
             }
 

@@ -1,6 +1,5 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
-use Exception;
 use Mabasic\Kalista\Cleaners\Cleaner;
 use Mabasic\Kalista\VideoFile;
 use SplFileInfo;

@@ -15,7 +15,8 @@ if (file_exists(__DIR__ . '/vendor/autoload.php'))
 {
     // For development purposes
     require __DIR__ . '/vendor/autoload.php';
-} else
+}
+else
 {
     // This is important because of bin executable
     require __DIR__ . '/../../autoload.php';

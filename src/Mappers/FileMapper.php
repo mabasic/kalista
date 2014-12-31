@@ -1,7 +1,7 @@
 <?php  namespace Mabasic\Kalista\Mappers;
 
-use Exception;
 use Mabasic\Kalista\Cleaners\Cleaner;
+use Mabasic\Kalista\Mappers\Exceptions\FileRequiredException;
 use SplFileInfo;
 
 class FileMapper implements Mapper {
@@ -16,7 +16,7 @@ class FileMapper implements Mapper {
         return array_map(function ($file) use ($class, $cleaner)
         {
             if ( ! $file instanceof SplFileInfo)
-                throw new Exception('Not a File!');
+                throw new FileRequiredException('Not a File!');
 
             return new $class($file, $cleaner);
 

@@ -1,6 +1,6 @@
 <?php  namespace Mabasic\Kalista\Databases\TheMovieDB;
 
-use Exception;
+use Mabasic\Kalista\Databases\Exceptions\MovieNotFoundException;
 use Mabasic\Kalista\VideoFile;
 use Tmdb\Model\Collection\ResultCollection;
 use Tmdb\Repository\MovieRepository;
@@ -21,7 +21,7 @@ class MovieDatabase extends TheMovieDB {
         $results = (new ResultCollection($this->theMovieDB->getSearchApi()->searchMovies($name)))->get('results');
 
         if (count($results) == 0)
-            throw new Exception('Movie not found in database');
+            throw new MovieNotFoundException("Movie: {$name} not found in database");
 
         return $results;
     }

@@ -1,6 +1,6 @@
 <?php namespace Mabasic\Kalista\Services\Environmental;
 
-use Exception;
+use Illuminate\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 
 class Environmental {
@@ -42,8 +42,7 @@ class Environmental {
 
         if ( ! $this->filesystem->exists($this->environmentFile))
         {
-            throw new Exception('.env.php file not found!');
-            //return [];
+            throw new FileNotFoundException('.env.php file not found!');
         }
 
         $variables = array_dot($this->filesystem->getRequire($this->environmentFile));

@@ -13,7 +13,7 @@ class TvShowEpisodeFilenameCleanerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException Exception
+     * @expectedException Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException
      */
     public function it_cannot_clean_the_filename()
     {
@@ -66,7 +66,7 @@ class TvShowEpisodeFilenameCleanerTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @test
-     * @expectedException Exception
+     * @expectedException Mabasic\Kalista\TvShows\Exceptions\InvalidSeasonAndEpisodeNumbersException
      */
     public function it_cannot_get_season_and_episode_numbers()
     {

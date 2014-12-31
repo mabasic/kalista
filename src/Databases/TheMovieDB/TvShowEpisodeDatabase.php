@@ -1,6 +1,6 @@
 <?php  namespace Mabasic\Kalista\Databases\TheMovieDB;
 
-use Exception;
+use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
 use Mabasic\Kalista\VideoFile;
 use Tmdb\Model\Collection\ResultCollection;
 use Tmdb\Repository\TvEpisodeRepository;
@@ -31,7 +31,7 @@ class TvShowEpisodeDatabase extends TheMovieDB {
         $results = (new ResultCollection($this->theMovieDB->getSearchApi()->searchTv($name)))->get('results');
 
         if (count($results) == 0)
-            throw new Exception('TvShowEpisode not found in database');
+            throw new TvShowEpisodeNotFoundException("TvShowEpisode: {$name} not found in database");
 
         return $results;
     }

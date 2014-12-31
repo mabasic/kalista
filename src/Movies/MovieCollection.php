@@ -1,8 +1,8 @@
 <?php namespace Mabasic\Kalista\Movies;
 
-use Exception;
 use Mabasic\Kalista\Collection;
 use Mabasic\Kalista\Databases\Database;
+use Mabasic\Kalista\Movies\Exceptions\MovieRequiredException;
 
 class MovieCollection implements Collection {
 
@@ -21,7 +21,7 @@ class MovieCollection implements Collection {
         }
 
         if ( ! $movies instanceof Movie)
-            throw new Exception('Not a Movie!');
+            throw new MovieRequiredException('Not a Movie!');
 
         $this->movies[] = $movies;
 
@@ -33,7 +33,7 @@ class MovieCollection implements Collection {
         foreach ($movies as $movie)
         {
             if ( ! $movie instanceof Movie)
-                throw new Exception('Not a Movie!');
+                throw new MovieRequiredException('Not a Movie!');
 
             $this->add($movie);
         }
@@ -78,6 +78,6 @@ class MovieCollection implements Collection {
 
     public function remove($index)
     {
-        // TODO: Implement remove() method.
+        unset($this->movies[$index]);
     }
 }
