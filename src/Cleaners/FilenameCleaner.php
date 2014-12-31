@@ -1,5 +1,7 @@
 <?php  namespace Mabasic\Kalista\Cleaners;
 
+use Exception;
+
 abstract class FilenameCleaner implements Cleaner {
 
     /**
@@ -9,6 +11,7 @@ abstract class FilenameCleaner implements Cleaner {
      * @param $filename
      * @param $regex
      * @return string
+     * @throws Exception
      */
     public function prepare($filename, $regex)
     {
@@ -21,6 +24,11 @@ abstract class FilenameCleaner implements Cleaner {
             return ! (preg_match($regex, $word));
         });
 
-        return join(' ', $words);
+        $output = join(' ', $words);
+
+        if($output == "")
+            throw new Exception("Could not clean filename: {$filename}");
+
+        return $output;
     }
 }

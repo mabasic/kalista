@@ -33,11 +33,6 @@ class TvShowEpisode implements VideoFile {
 
     public function getCleanedFilename()
     {
-        $clean = $this->cleaner->clean($this->file->getFilename());
-
-        if($clean == "")
-            throw new Exception("{$this->file->getFilename()} cannot be cleaned.");
-
         return $this->cleaner->clean($this->file->getFilename());
     }
 

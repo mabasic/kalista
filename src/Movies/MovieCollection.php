@@ -3,7 +3,6 @@
 use Exception;
 use Mabasic\Kalista\Collection;
 use Mabasic\Kalista\Databases\Database;
-use Mabasic\Kalista\VideoFile;
 
 class MovieCollection implements Collection {
 

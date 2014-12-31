@@ -1,5 +1,6 @@
 <?php  namespace Mabasic\Kalista\TvShows;
 
+use Exception;
 use Mabasic\Kalista\Cleaners\FilenameCleaner;
 
 class TvShowEpisodeFilenameCleaner extends FilenameCleaner {
@@ -13,7 +14,10 @@ class TvShowEpisodeFilenameCleaner extends FilenameCleaner {
     {
         $filename = $this->prepare($filename, $regex);
 
-        $value = preg_replace('/[aA-zZ]| /i', '', $filename);
+        $value = preg_replace('/[aA-zZ]| |-/i', '', $filename);
+
+        if($value == "")
+            throw new Exception("Could not get season and episode numbers from filename: {$filename}");
 
         return $value;
     }
