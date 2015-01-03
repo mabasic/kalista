@@ -11,19 +11,6 @@ class TvShowEpisodeFilenameCleanerTest extends PHPUnit_Framework_TestCase {
         $this->cleaner = new TvShowEpisodeFilenameCleaner;
     }
 
-    /**
-     * @test
-     * @expectedException Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException
-     */
-    public function it_cannot_clean_the_filename()
-    {
-        $filename = "The Mentalist - 7x3 - Orange Blossom Ice Cream.mp4";
-
-        $result = $this->cleaner->clean($filename);
-
-        $this->assertEquals('', $result);
-    }
-
     /** @test */
     public function it_cleans_the_filename()
     {
@@ -39,6 +26,19 @@ class TvShowEpisodeFilenameCleanerTest extends PHPUnit_Framework_TestCase {
         $result = $this->cleaner->clean($filename);
 
         $this->assertEquals('NCIS Los Angeles', $result);
+    }
+
+    /**
+     * @test
+     * @expectedException Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException
+     */
+    public function it_cannot_clean_the_filename()
+    {
+        $filename = "The Mentalist - 7x3 - Orange Blossom Ice Cream.mp4";
+
+        $result = $this->cleaner->clean($filename);
+
+        $this->assertEquals('', $result);
     }
 
     /** @test */
