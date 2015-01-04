@@ -1,6 +1,5 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
-use Exception;
 use Mabasic\Kalista\Collection;
 use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
 use Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase;
@@ -10,9 +9,9 @@ class TvShowEpisodeCollection implements Collection {
 
     protected $tvShowEpisodes = [];
 
-    function __construct($tvShowEpisodes)
+    function __construct($tvShowEpisodes = null)
     {
-        $this->addTvShowEpisodes($tvShowEpisodes);
+        if($tvShowEpisodes !== null) $this->addTvShowEpisodes($tvShowEpisodes);
     }
 
     public function add($tvShowEpisodes)

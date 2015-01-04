@@ -8,9 +8,9 @@ class MovieCollection implements Collection {
 
     protected $movies = [];
 
-    function __construct($movies)
+    function __construct($movies = null)
     {
-        $this->addMovies($movies);
+        if($movies !== null) $this->addMovies($movies);
     }
 
     public function add($movies)
