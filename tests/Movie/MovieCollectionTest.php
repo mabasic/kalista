@@ -9,6 +9,17 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
         Mockery::close();
     }
 
+    public function collectionWithOneMovie()
+    {
+        $movie = Mockery::mock('Mabasic\Kalista\Movies\Movie');
+
+        $collection = new MovieCollection;
+
+        $collection->add($movie);
+
+        return $collection;
+    }
+
     /** @test */
     public function it_initializes_empty_collection()
     {
@@ -44,11 +55,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
     /** @test */
     public function it_adds_a_movie_to_collection()
     {
-        $movie = Mockery::mock('Mabasic\Kalista\Movies\Movie');
-
-        $collection = new MovieCollection;
-
-        $collection->add($movie);
+        $collection = $this->collectionWithOneMovie();
 
         $this->assertEquals(1, count($collection->getCollection()));
     }
@@ -69,7 +76,40 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
         $collection->fetchMovieNames($database);
 
         $this->assertEquals('test', $collection->getCollection()[0]->getName());
+    }
 
+    /** @test */
+    public function it_removes_movie_from_collection()
+    {
+        $collection = $this->collectionWithOneMovie();
+
+        $collection->remove(0);
+
+        $this->assertEquals(0, count($collection->getCollection()));
+    }
+
+    /** @test */
+    public function it_gets_table_headers()
+    {
+        $collection = $this->collectionWithOneMovie();
+
+        $this->assertInternalType('array', $collection->getHeaders());
+    }
+
+    /** @test */
+    public function it_gets_table_rows()
+    {
+        $movie = Mockery::mock('Mabasic\Kalista\Movies\Movie');
+        $movie->shouldReceive('getName')->times(2)
+            ->andReturn('The Babadook');
+        $movie->shouldReceive('file->getFilename')->times(2)
+            ->andReturn('The.Babadook.2014.BRRip.XviD.AC3-EVO.avi');
+
+        $collection = new MovieCollection([$movie]);
+
+        $this->assertInternalType('array', $collection->getRows());
+
+        $this->assertEquals(1, count($collection->getRows()));
     }
 
 }
