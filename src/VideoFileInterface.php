@@ -2,7 +2,7 @@
 
 use SplFileInfo;
 
-interface VideoFile {
+interface VideoFileInterface {
 
     public function getName();
 

@@ -1,10 +1,10 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
-use Mabasic\Kalista\Cleaners\Cleaner;
-use Mabasic\Kalista\VideoFile;
+use Mabasic\Kalista\Cleaners\CleanerInterface;
+use Mabasic\Kalista\VideoFileInterface;
 use SplFileInfo;
 
-class TvShowEpisode implements VideoFile {
+class TvShowEpisode implements VideoFileInterface {
 
     protected $name;
 
@@ -14,7 +14,7 @@ class TvShowEpisode implements VideoFile {
 
     protected $showName;
 
-    public function __construct(SplFileInfo $file, Cleaner $cleaner)
+    public function __construct(SplFileInfo $file, CleanerInterface $cleaner)
     {
         $this->file = $file;
         $this->cleaner = $cleaner;

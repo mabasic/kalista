@@ -1,11 +1,11 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
-use Mabasic\Kalista\Collection;
+use Mabasic\Kalista\CollectionInterface;
 use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
 use Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase;
 use Mabasic\Kalista\TvShows\Exceptions\TvShowEpisodeRequiredException;
 
-class TvShowEpisodeCollection implements Collection {
+class TvShowEpisodeCollectionInterface implements CollectionInterface {
 
     protected $tvShowEpisodes = [];
 

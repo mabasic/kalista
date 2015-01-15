@@ -1,6 +1,6 @@
 <?php
 
-use Mabasic\Kalista\Movies\MovieCollection;
+use Mabasic\Kalista\Movies\MovieCollectionInterface;
 
 class MovieCollectionTest extends PHPUnit_Framework_TestCase {
 
@@ -13,7 +13,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
     {
         $movie = Mockery::mock('Mabasic\Kalista\Movies\Movie');
 
-        $collection = new MovieCollection;
+        $collection = new MovieCollectionInterface;
 
         $collection->add($movie);
 
@@ -23,7 +23,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
     /** @test */
     public function it_initializes_empty_collection()
     {
-        $collection = new MovieCollection;
+        $collection = new MovieCollectionInterface;
 
         $this->assertInstanceOf('Mabasic\Kalista\Movies\MovieCollection', $collection);
 
@@ -35,7 +35,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
     {
         $movie = Mockery::mock('Mabasic\Kalista\Movies\Movie');
 
-        $collection = new MovieCollection([$movie]);
+        $collection = new MovieCollectionInterface([$movie]);
 
         $this->assertEquals(1, count($collection->getCollection()));
     }
@@ -45,7 +45,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
     {
         $movie = Mockery::mock('Mabasic\Kalista\Movies\Movie');
 
-        $collection = new MovieCollection;
+        $collection = new MovieCollectionInterface;
 
         $collection->add([$movie, $movie]);
 
@@ -72,7 +72,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
         $database->shouldReceive('getName')->once()
             ->andReturn('test');
 
-        $collection = new MovieCollection([$movie]);
+        $collection = new MovieCollectionInterface([$movie]);
         $collection->fetchMovieNames($database);
 
         $this->assertEquals('test', $collection->getCollection()[0]->getName());
@@ -105,7 +105,7 @@ class MovieCollectionTest extends PHPUnit_Framework_TestCase {
         $movie->shouldReceive('file->getFilename')->times(2)
             ->andReturn('The.Babadook.2014.BRRip.XviD.AC3-EVO.avi');
 
-        $collection = new MovieCollection([$movie]);
+        $collection = new MovieCollectionInterface([$movie]);
 
         $this->assertInternalType('array', $collection->getRows());
 

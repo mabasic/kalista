@@ -1,14 +1,15 @@
 <?php  namespace Mabasic\Kalista\Databases\TheMovieDB;
 
 use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
-use Mabasic\Kalista\VideoFile;
+use Mabasic\Kalista\VideoFileInterface;
 use Tmdb\Model\Collection\ResultCollection;
 use Tmdb\Repository\TvEpisodeRepository;
 use Tmdb\Repository\TvRepository;
+use Mabasic\Kalista\Databases\TvShowEpisodeDatabaseInterface;;
 
-class TvShowEpisodeDatabase extends TheMovieDB {
+class TvShowEpisodeDatabase extends TheMovieDB implements TvShowEpisodeDatabaseInterface {
 
-    public function getName(VideoFile $videoFile)
+    public function getName(VideoFileInterface $videoFile)
     {
         $results = $this->searchTvShowEpisodeDatabaseByFilename($videoFile->getCleanedFilename());
 
@@ -17,7 +18,7 @@ class TvShowEpisodeDatabase extends TheMovieDB {
         return $repository->load($results[0]['id'], $videoFile->getSeason(), $videoFile->getEpisodeNumber())->getName();
     }
 
-    public function getShowName(VideoFile $videoFile)
+    public function getShowName(VideoFileInterface $videoFile)
     {
         $results = $this->searchTvShowEpisodeDatabaseByFilename($videoFile->getCleanedFilename());
 

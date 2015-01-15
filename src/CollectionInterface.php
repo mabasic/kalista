@@ -1,6 +1,6 @@
 <?php namespace Mabasic\Kalista;
 
-interface Collection {
+interface CollectionInterface {
 
     public function add($movies);
 

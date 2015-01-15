@@ -1,6 +1,6 @@
 <?php  namespace Mabasic\Kalista\Cleaners;
 
-interface Cleaner {
+interface CleanerInterface {
 
     public function clean($string);
 

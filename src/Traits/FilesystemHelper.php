@@ -1,7 +1,7 @@
 <?php  namespace Mabasic\Kalista\Traits;
 
 use Mabasic\Kalista\Traits\Exceptions\NameNotSetException;
-use Mabasic\Kalista\VideoFile;
+use Mabasic\Kalista\VideoFileInterface;
 use SplFileInfo;
 
 trait FilesystemHelper {
@@ -22,7 +22,7 @@ trait FilesystemHelper {
 
     public function renameFiles($files)
     {
-        array_walk($files, function(VideoFile $file)
+        array_walk($files, function(VideoFileInterface $file)
         {
             if($file->getName() === null)
                 throw new NameNotSetException('Name not set!');

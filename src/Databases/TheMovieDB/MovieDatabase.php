@@ -1,13 +1,14 @@
 <?php  namespace Mabasic\Kalista\Databases\TheMovieDB;
 
 use Mabasic\Kalista\Databases\Exceptions\MovieNotFoundException;
-use Mabasic\Kalista\VideoFile;
+use Mabasic\Kalista\VideoFileInterface;
 use Tmdb\Model\Collection\ResultCollection;
 use Tmdb\Repository\MovieRepository;
+use Mabasic\Kalista\Databases\MovieDatabaseInterface;
 
-class MovieDatabase extends TheMovieDB {
+class MovieDatabase extends TheMovieDB implements MovieDatabaseInterface {
 
-    public function getName(VideoFile $videoFile)
+    public function getName(VideoFileInterface $videoFile)
     {
         $results = $this->searchMovieDatabaseByFilename($videoFile->getCleanedFilename());
 

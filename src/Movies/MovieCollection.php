@@ -1,10 +1,10 @@
 <?php namespace Mabasic\Kalista\Movies;
 
-use Mabasic\Kalista\Collection;
-use Mabasic\Kalista\Databases\Database;
+use Mabasic\Kalista\CollectionInterface;
+use Mabasic\Kalista\Databases\DatabaseInterface;
 use Mabasic\Kalista\Movies\Exceptions\MovieRequiredException;
 
-class MovieCollection implements Collection {
+class MovieCollectionInterface implements CollectionInterface {
 
     protected $movies = [];
 
@@ -41,7 +41,7 @@ class MovieCollection implements Collection {
         return $this;
     }
 
-    public function fetchMovieNames(Database $database)
+    public function fetchMovieNames(DatabaseInterface $database)
     {
         array_walk($this->movies, function(Movie $movie) use ($database)
         {

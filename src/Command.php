@@ -1,13 +1,13 @@
 <?php namespace Mabasic\Kalista;
 
 use Illuminate\Filesystem\Filesystem;
-use Mabasic\Kalista\Databases\Database;
-use Mabasic\Kalista\Mappers\Mapper;
-use Mabasic\Kalista\Movies\MovieCollection;
+use Mabasic\Kalista\Databases\DatabaseInterface;
+use Mabasic\Kalista\Mappers\MapperInterface;
+use Mabasic\Kalista\Movies\MovieCollectionInterface;
 use Mabasic\Kalista\Movies\MovieFilenameCleaner;
 use Mabasic\Kalista\Services\Environmental\Environmental;
 use Mabasic\Kalista\Traits\FilesystemHelper;
-use Mabasic\Kalista\TvShows\TvShowEpisodeCollection;
+use Mabasic\Kalista\TvShows\TvShowEpisodeCollectionInterface;
 use Mabasic\Kalista\TvShows\TvShowEpisodeFilenameCleaner;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Helper\Table;
@@ -23,7 +23,7 @@ class Command extends SymfonyCommand {
 
     protected $mapper;
 
-    public function __construct(Filesystem $filesystem, Environmental $environmental, Mapper $mapper)
+    public function __construct(Filesystem $filesystem, Environmental $environmental, MapperInterface $mapper)
     {
         $this->filesystem = $filesystem;
         $this->environmental = $environmental;
@@ -33,7 +33,7 @@ class Command extends SymfonyCommand {
         parent::__construct();
     }
 
-    protected function renameMovies($source, OutputInterface $output, Database $database)
+    protected function renameMovies($source, OutputInterface $output, DatabaseInterface $database)
     {
         // What do i want to do in as few steps as possible?
 
@@ -53,7 +53,7 @@ class Command extends SymfonyCommand {
 
         $movies = $this->mapper->mapFiles($files, 'Mabasic\Kalista\Movies\Movie', new MovieFilenameCleaner);
 
-        $moviesCollection = (new MovieCollection($movies))->fetchMovieNames($database);
+        $moviesCollection = (new MovieCollectionInterface($movies))->fetchMovieNames($database);
 
         $this->renameFiles($moviesCollection->getCollection());
 
@@ -66,7 +66,7 @@ class Command extends SymfonyCommand {
 
         $tvShowEpisodes = $this->mapper->mapFiles($files, 'Mabasic\Kalista\TvShows\TvShowEpisode', new TvShowEpisodeFilenameCleaner);
 
-        $tvShowEpisodesCollection = (new TvShowEpisodeCollection($tvShowEpisodes))->fetchTvShowEpisodeInfo($database);
+        $tvShowEpisodesCollection = (new TvShowEpisodeCollectionInterface($tvShowEpisodes))->fetchTvShowEpisodeInfo($database);
 
         $this->renameFiles($tvShowEpisodesCollection->getCollection());
 

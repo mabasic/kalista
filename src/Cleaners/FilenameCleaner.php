@@ -2,7 +2,7 @@
 
 use Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException;
 
-abstract class FilenameCleaner implements Cleaner {
+abstract class FilenameCleanerInterface implements CleanerInterface {
 
     /**
      * Cleans filename of common characters and given regex.
