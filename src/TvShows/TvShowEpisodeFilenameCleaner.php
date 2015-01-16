@@ -1,9 +1,9 @@
 <?php  namespace Mabasic\Kalista\TvShows;
 
-use Mabasic\Kalista\Cleaners\FilenameCleanerInterface;
+use Mabasic\Kalista\Cleaners\FilenameCleaner;
 use Mabasic\Kalista\TvShows\Exceptions\InvalidSeasonAndEpisodeNumbersException;
 
-class TvShowEpisodeFilenameCleaner extends FilenameCleanerInterface {
+class TvShowEpisodeFilenameCleaner extends FilenameCleaner {
 
     public function clean($filename)
     {

@@ -1,6 +1,6 @@
 <?php
 
-use Mabasic\Kalista\TvShows\TvShowEpisodeCollectionInterface;
+use Mabasic\Kalista\TvShows\TvShowEpisodeCollection;
 
 class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
 
@@ -13,7 +13,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
     {
         $tvShowEpisode = Mockery::mock('Mabasic\Kalista\TvShows\TvShowEpisode');
 
-        $collection = new TvShowEpisodeCollectionInterface;
+        $collection = new TvShowEpisodeCollection;
 
         $collection->add($tvShowEpisode);
 
@@ -23,7 +23,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
     /** @test */
     public function it_initializes_empty_collection()
     {
-        $collection = new TvShowEpisodeCollectionInterface;
+        $collection = new TvShowEpisodeCollection;
 
         $this->assertInstanceOf('Mabasic\Kalista\TvShows\TvShowEpisodeCollection', $collection);
 
@@ -35,7 +35,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
     {
         $tvShowEpisode = Mockery::mock('Mabasic\Kalista\TvShows\TvShowEpisode');
 
-        $collection = new TvShowEpisodeCollectionInterface([$tvShowEpisode]);
+        $collection = new TvShowEpisodeCollection([$tvShowEpisode]);
 
         $this->assertEquals(1, count($collection->getCollection()));
     }
@@ -45,7 +45,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
     {
         $tvShowEpisode = Mockery::mock('Mabasic\Kalista\TvShows\TvShowEpisode');
 
-        $collection = new TvShowEpisodeCollectionInterface;
+        $collection = new TvShowEpisodeCollection;
 
         $collection->add([$tvShowEpisode, $tvShowEpisode]);
 
@@ -75,7 +75,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
         $database->shouldReceive('getShowName')->once()
             ->andReturn('test');
 
-        $collection = new TvShowEpisodeCollectionInterface([$tvShowEpisode]);
+        $collection = new TvShowEpisodeCollection([$tvShowEpisode]);
         $collection->fetchTvShowEpisodeInfo($database);
 
         $this->assertEquals('test', $collection->getCollection()[0]->getName());
@@ -89,7 +89,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
         $database = Mockery::mock('Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase');
         $database->shouldReceive('getName')->once()->andThrow('Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException');
 
-        $collection = new TvShowEpisodeCollectionInterface([$tvShowEpisode]);
+        $collection = new TvShowEpisodeCollection([$tvShowEpisode]);
         $collection->fetchTvShowEpisodeInfo($database);
 
         $this->assertEquals(0, count($collection->getCollection()));
@@ -128,7 +128,7 @@ class TvShowEpisodeCollectionTest extends PHPUnit_Framework_TestCase {
         $tvShowEpisode->shouldReceive('getSeason')->times(2)
             ->andReturn('test');
 
-        $collection = new TvShowEpisodeCollectionInterface([$tvShowEpisode]);
+        $collection = new TvShowEpisodeCollection([$tvShowEpisode]);
 
         $this->assertInternalType('array', $collection->getRows());
 

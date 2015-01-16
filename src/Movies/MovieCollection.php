@@ -4,7 +4,7 @@ use Mabasic\Kalista\CollectionInterface;
 use Mabasic\Kalista\Databases\DatabaseInterface;
 use Mabasic\Kalista\Movies\Exceptions\MovieRequiredException;
 
-class MovieCollectionInterface implements CollectionInterface {
+class MovieCollection implements CollectionInterface {
 
     protected $movies = [];
 

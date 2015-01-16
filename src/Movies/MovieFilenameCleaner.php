@@ -1,8 +1,8 @@
 <?php  namespace Mabasic\Kalista\Movies;
 
-use Mabasic\Kalista\Cleaners\FilenameCleanerInterface;
+use Mabasic\Kalista\Cleaners\FilenameCleaner;
 
-class MovieFilenameCleaner extends FilenameCleanerInterface {
+class MovieFilenameCleaner extends FilenameCleaner {
 
     protected $extensions = 'MP4|AVI|MKV';
 

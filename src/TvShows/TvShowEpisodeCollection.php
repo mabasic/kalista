@@ -5,7 +5,7 @@ use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
 use Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase;
 use Mabasic\Kalista\TvShows\Exceptions\TvShowEpisodeRequiredException;
 
-class TvShowEpisodeCollectionInterface implements CollectionInterface {
+class TvShowEpisodeCollection implements CollectionInterface {
 
     protected $tvShowEpisodes = [];
 
