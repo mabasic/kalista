@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\TvShows;
+<?php namespace Mabasic\Kalista\TvShows;
 
 use Mabasic\Kalista\Cleaners\FilenameCleaner;
 use Mabasic\Kalista\TvShows\Exceptions\InvalidSeasonAndEpisodeNumbersException;

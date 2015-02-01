@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Movies;
+<?php namespace Mabasic\Kalista\Movies;
 
 use Mabasic\Kalista\Cleaners\FilenameCleaner;
 

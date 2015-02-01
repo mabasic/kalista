@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Databases;
+<?php namespace Mabasic\Kalista\Databases;
 
 use Mabasic\Kalista\VideoFileInterface;
 

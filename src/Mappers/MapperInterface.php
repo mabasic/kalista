@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Mappers;
+<?php namespace Mabasic\Kalista\Mappers;
 
 use Mabasic\Kalista\Cleaners\CleanerInterface;
 use SplFileInfo;

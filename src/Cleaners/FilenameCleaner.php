@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Cleaners;
+<?php namespace Mabasic\Kalista\Cleaners;
 
 use Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException;
 

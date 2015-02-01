@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Mappers\Exceptions;
+<?php namespace Mabasic\Kalista\Mappers\Exceptions;
 
 use Exception;
 

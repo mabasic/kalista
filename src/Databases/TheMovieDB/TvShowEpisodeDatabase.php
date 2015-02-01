@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Databases\TheMovieDB;
+<?php namespace Mabasic\Kalista\Databases\TheMovieDB;
 
 use Mabasic\Kalista\Databases\Exceptions\TvShowEpisodeNotFoundException;
 use Mabasic\Kalista\VideoFileInterface;

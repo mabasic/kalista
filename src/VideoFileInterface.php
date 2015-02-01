@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista;
+<?php namespace Mabasic\Kalista;
 
 use SplFileInfo;
 
