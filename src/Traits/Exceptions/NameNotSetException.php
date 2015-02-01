@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Traits\Exceptions;
+<?php namespace Mabasic\Kalista\Traits\Exceptions;
 
 use Exception;
 

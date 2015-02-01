@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\Traits;
+<?php namespace Mabasic\Kalista\Traits;
 
 use Mabasic\Kalista\Traits\Exceptions\NameNotSetException;
 use Mabasic\Kalista\VideoFileInterface;

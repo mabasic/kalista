@@ -3,11 +3,11 @@
 use Illuminate\Filesystem\Filesystem;
 use Mabasic\Kalista\Databases\DatabaseInterface;
 use Mabasic\Kalista\Mappers\MapperInterface;
-use Mabasic\Kalista\Movies\MovieCollectionInterface;
+use Mabasic\Kalista\Movies\MovieCollection;
 use Mabasic\Kalista\Movies\MovieFilenameCleaner;
 use Mabasic\Kalista\Services\Environmental\Environmental;
 use Mabasic\Kalista\Traits\FilesystemHelper;
-use Mabasic\Kalista\TvShows\TvShowEpisodeCollectionInterface;
+use Mabasic\Kalista\TvShows\TvShowEpisodeCollection;
 use Mabasic\Kalista\TvShows\TvShowEpisodeFilenameCleaner;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Helper\Table;
@@ -53,7 +53,7 @@ class Command extends SymfonyCommand {
 
         $movies = $this->mapper->mapFiles($files, 'Mabasic\Kalista\Movies\Movie', new MovieFilenameCleaner);
 
-        $moviesCollection = (new MovieCollectionInterface($movies))->fetchMovieNames($database);
+        $moviesCollection = (new MovieCollection($movies))->fetchMovieNames($database);
 
         $this->renameFiles($moviesCollection->getCollection());
 
@@ -66,7 +66,7 @@ class Command extends SymfonyCommand {
 
         $tvShowEpisodes = $this->mapper->mapFiles($files, 'Mabasic\Kalista\TvShows\TvShowEpisode', new TvShowEpisodeFilenameCleaner);
 
-        $tvShowEpisodesCollection = (new TvShowEpisodeCollectionInterface($tvShowEpisodes))->fetchTvShowEpisodeInfo($database);
+        $tvShowEpisodesCollection = (new TvShowEpisodeCollection($tvShowEpisodes))->fetchTvShowEpisodeInfo($database);
 
         $this->renameFiles($tvShowEpisodesCollection->getCollection());
 

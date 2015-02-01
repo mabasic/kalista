@@ -1,6 +1,6 @@
 <?php namespace Mabasic\Kalista\Providers;
 
-interface ServiceProvider {
+interface ServiceProviderInterface {
 
     public function register();
 }

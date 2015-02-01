@@ -4,10 +4,10 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Mabasic\Kalista\Mappers\FileMapper;
-use Mabasic\Kalista\Movies\OrganizeCommand as OrganizeMovieCommand;
+//use Mabasic\Kalista\Movies\OrganizeCommand as OrganizeMovieCommand;
 use Mabasic\Kalista\Movies\RenameCommand as RenameMovieCommand;
 use Mabasic\Kalista\TvShows\RenameCommand as RenameTvShowEpisodesCommand;
-use Mabasic\Kalista\TVShows\OrganizeCommand as OrganizeTvShowCommand;
+//use Mabasic\Kalista\TVShows\OrganizeCommand as OrganizeTvShowCommand;
 use Mabasic\Kalista\Services\Environmental\Environmental;
 use Symfony\Component\Console\Application;
 

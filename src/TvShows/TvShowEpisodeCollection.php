@@ -46,7 +46,7 @@ class TvShowEpisodeCollection implements CollectionInterface {
     {
         $counter = 0;
 
-        foreach($this->tvShowEpisodes as $tvShowEpisode)
+        array_walk($this->tvShowEpisodes, function(TvShowEpisode $tvShowEpisode) use (&$counter, $database)
         {
             try
             {
@@ -61,7 +61,7 @@ class TvShowEpisodeCollection implements CollectionInterface {
             }
 
             $counter++;
-        }
+        });
 
         return $this;
     }
@@ -80,7 +80,7 @@ class TvShowEpisodeCollection implements CollectionInterface {
     {
         $rows = [];
 
-        foreach ($this->tvShowEpisodes as $tvShowEpisode)
+        array_walk($this->tvShowEpisodes, function(TvShowEpisode $tvShowEpisode) use (&$rows)
         {
             $rows[] = [
                 $tvShowEpisode->file()->getFilename(),
@@ -89,7 +89,7 @@ class TvShowEpisodeCollection implements CollectionInterface {
                 $tvShowEpisode->getShowName(),
                 $tvShowEpisode->getSeason()
             ];
-        }
+        });
 
         return $rows;
     }

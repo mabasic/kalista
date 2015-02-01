@@ -65,13 +65,13 @@ class MovieCollection implements CollectionInterface {
     {
         $rows = [];
 
-        foreach ($this->movies as $movie)
+        array_walk($this->movies, function(Movie $movie) use (&$rows)
         {
             $rows[] = [
                 $movie->file()->getFilename(),
                 $movie->getName(),
             ];
-        }
+        });
 
         return $rows;
     }

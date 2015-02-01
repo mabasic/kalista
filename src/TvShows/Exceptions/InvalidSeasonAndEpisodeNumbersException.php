@@ -1,4 +1,4 @@
-<?php  namespace Mabasic\Kalista\TvShows\Exceptions;
+<?php namespace Mabasic\Kalista\TvShows\Exceptions;
 
 use Exception;
 
