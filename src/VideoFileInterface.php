@@ -14,6 +14,8 @@ interface VideoFileInterface {
 
     public function getFilename();
 
+    public function getOrganizedFilePathPartial();
+
     /**
      * @return SplFileInfo
      */

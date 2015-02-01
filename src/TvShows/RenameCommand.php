@@ -27,6 +27,9 @@ class RenameCommand extends Command {
                 InputArgument::OPTIONAL,
                 'Database to be used for name resolution. The default is TheMovieDB.'
             )
+            ->addOption(
+                'testing'
+            )
             ->setDescription('Fetches tv show and episode names and renames files.');
     }
 
@@ -43,7 +46,9 @@ class RenameCommand extends Command {
 
         $database = $this->getDatabase($input->getArgument('database'));
 
-        $this->renameTvShowEpisodes($source, $output, $database);
+        $testing = $input->getOption('testing');
+
+        $this->renameTvShowEpisodes($source, $output, $database, $testing);
     }
 
     private function getDatabase($database)

@@ -32,7 +32,7 @@ trait FilesystemHelper {
 
     }
 
-    public function getFiles($path, $extensions = ['avi', 'mp4', 'mkv'], $ignoredWords = ['Sample'])
+    public function getFiles($path, $extensions = ['avi', 'mp4', 'mkv'], $ignoredWords = ['Sample', 'sample'])
     {
         $files = $this->filesystem->allFiles($path);
 
@@ -57,10 +57,10 @@ trait FilesystemHelper {
         {
             foreach ($ignoredWords as $ignoredWord)
             {
-                if (strpos($file->getFilename(), $ignoredWord) === false) return true;
+                if (strpos($file->getFilename(), $ignoredWord) !== false) return false;
             }
 
-            return false;
+            return true;
         });
     }
 

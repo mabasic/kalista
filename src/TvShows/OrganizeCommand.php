@@ -1,7 +1,9 @@
 <?php namespace Mabasic\Kalista\TVShows;
 
 use Mabasic\Kalista\Command;
-use Mabasic\Kalista\TVShows\Exceptions\UnreadableTVShowInformationException;
+use Mabasic\Kalista\Databases\TheMovieDB\TvShowEpisodeDatabase;
+use Mabasic\Kalista\Providers\TheMovieDBServiceProvider;
+use Mabasic\Kalista\VideoFileInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,7 +32,15 @@ class OrganizeCommand extends Command {
                 InputArgument::REQUIRED,
                 'Destination folder where organized files are stored.'
             )
-            ->setDescription('Moves TV shows from one folder to another folder in separate folders.');
+            ->addArgument(
+                'database',
+                InputArgument::OPTIONAL,
+                'Database to be used for name resolution. The default is TheMovieDB.'
+            )
+            ->addOption(
+                'testing'
+            )
+            ->setDescription('Rename and move TV shows from one folder to another folder in separate folders.');
     }
 
     /**
@@ -42,72 +52,90 @@ class OrganizeCommand extends Command {
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->progress = new ProgressBar($output);
-
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
 
-        $this->organizeTVShows($source, $destination, $output);
+        $database = $this->getDatabase($input->getArgument('database'));
+
+        $testing = $input->getOption('testing');
+
+        $tvShowEpisodeCollection = $this->renameTvShowEpisodes($source, $output, $database, $testing, false);
+
+        $this->organizeTvShowEpisodes($tvShowEpisodeCollection, $destination, $output, $testing);
     }
 
-    public function organizeTVShows($source, $destination, OutputInterface $output)
+    protected function organizeTvShowEpisodes(TvShowEpisodeCollection $tvShowEpisodesCollection, $destination, OutputInterface $output, $testing = false)
     {
-        $files = $this->getFiles($source);
+        if ( ! $testing)
+            $this->moveFiles($tvShowEpisodesCollection->getCollection(), $destination, $output);
 
-        $numberOfFiles = count($files);
-
-        if ($numberOfFiles == 0)
+        if (count($tvShowEpisodesCollection->getCollection()) == 0)
         {
-            return $output->writeln('There are no TVShows to be organized.');
+            $output->writeln('The are no files to move.');
         }
+        else
+        {
+            $output->writeln('Changes: ');
+            $this->outputTable($this->getHeaders(), $this->getRows($tvShowEpisodesCollection->getCollection()), $output);
 
-        $this->progress->start($numberOfFiles);
-
-        $this->filebot->renameTVShows($files);
-
-        $files = $this->getFiles($source);
-
-        $this->moveTVShowsToDestination($files, $destination);
-
-        // TODO: Why does this method do nothing???
-        $this->filesystem->cleanDirectory($source);
-
-        $this->progress->finish();
+            $output->writeln('');
+            $output->writeln('Unresolved: ');
+            $this->outputTable($tvShowEpisodesCollection->getUnresolvedHeaders(), $tvShowEpisodesCollection->getUnresolvedRows(), $output);
+        }
     }
 
-    private function moveTVShowsToDestination($files, $destination)
+    private function getHeaders()
     {
-        array_walk($files, function (SplFileInfo $file) use ($destination)
+        return ['Old', 'New'];
+    }
+
+    private function getRows($collection)
+    {
+        $rows = [];
+
+        array_walk($collection, function(TvShowEpisode $tvShowEpisode) use (&$rows)
         {
-            $destinationFolder = $destination . '\\' . $this->getFolderNameForTVShow($file);
-
-            $this->makeDirectory($destinationFolder);
-
-
-            $destinationMoviePath = $destinationFolder . '\\' . $file->getFilename();
-
-            $this->filesystem->move($file->getPathname(), $destinationMoviePath);
-
-            $this->progress->advance();
+            $rows[] = [
+                $tvShowEpisode->file()->getFilename(),
+                $tvShowEpisode->getOrganizedFilePathPartial()
+            ];
         });
+
+        return $rows;
     }
 
-    private function getFolderNameForTVShow(SplFileInfo $tvShow)
+    private function getDatabase($database)
     {
-        $exploded = explode(' - ', $tvShow->getFilename());
-
-        if(count($exploded) != 3)
+        /*if($database == 'xy')
         {
-            throw new UnreadableTVShowInformationException($tvShow->getFilename());
-        }
+            return new
+        }*/
 
-        $season = explode('x', $exploded[1]);
+        // The default = TheMovieDB
+        return new TvShowEpisodeDatabase(new TheMovieDBServiceProvider($this->environmental));
+    }
 
-        $season = $season[0];
-        //$episode = $season[1];
-        //$episodeTitle = $exploded[2];
-        $tvShowTitle = $exploded[0];
+    private function moveFiles($files, $destination, OutputInterface $output)
+    {
+        $output->writeln('Moving Tv Show episodes to new location');
+        $output->writeln('');
 
-        return $tvShowTitle . '\\Season ' . $season;
+        $progress = new ProgressBar($output, count($files));
+        //$progress->setMessage('Loading Tv Show episode data from database');
+        $progress->start();
+
+        array_walk($files, function(VideoFileInterface $file) use ($destination, $progress)
+        {
+            $this->filesystem->move($file->getPathname(), $destination . $file->getOrganizedFilePathPartial());
+
+            $progress->advance();
+        });
+
+        $progress->finish();
+
+        $output->writeln('');
+        $output->writeln('');
+        $output->writeln('Task finished.');
+        $output->writeln('');
     }
 }

@@ -1,10 +1,14 @@
 <?php namespace Mabasic\Kalista\TvShows;
 
 use Mabasic\Kalista\Cleaners\CleanerInterface;
+use Mabasic\Kalista\Cleaners\Exceptions\FilenameNotCleanedException;
+use Mabasic\Kalista\Traits\SanitizerTrait;
 use Mabasic\Kalista\VideoFileInterface;
 use SplFileInfo;
 
 class TvShowEpisode implements VideoFileInterface {
+
+    use SanitizerTrait;
 
     protected $name;
 
@@ -32,14 +36,39 @@ class TvShowEpisode implements VideoFileInterface {
 
     public function getCleanedFilename()
     {
-        return $this->cleaner->clean($this->file->getFilename());
+        try
+        {
+            //dd($this->cleaner->clean($this->file->getFilename()));
+            return $this->cleaner->clean($this->file->getFilename());
+        }
+        catch(FilenameNotCleanedException $exception)
+        {
+            $parts = explode(' - ', $this->file->getFilename());
+
+            $parts[0] = preg_replace("/[']/i", '', $parts[0]);
+
+            return strtolower($parts[0]);
+        }
     }
 
     public function getCleanedFilenameWithNumbers()
     {
-        $filename = $this->cleaner->prepare($this->file->getFilename(), "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264/i");
+        try {
+            $filename = $this->cleaner->prepare($this->file->getFilename(), "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264|2014|READNFO/i");
 
-        return preg_replace('/[aA-zZ]| /i', '', $filename);
+            //dd(preg_replace('/[aA-zZ]| /i', '', $filename));
+            return preg_replace("/[aA-zZ]| |[-]|[']/i", '', $filename);
+        }
+        catch(FilenameNotCleanedException $exception)
+        {
+            $parts = explode(' - ', $this->file->getFilename());
+
+            //$parts[0] = preg_replace("/[']/i", '', $parts[0]);
+            $parts[1] = preg_replace('/[x]/i', '', $parts[1]);
+
+            //dd($parts[0] . ' ' . $parts[1]);
+            return $parts[1];
+        }
     }
 
     public function file()
@@ -56,6 +85,11 @@ class TvShowEpisode implements VideoFileInterface {
     public function getFilename()
     {
         return "{$this->showName} - {$this->getSeason()}x{$this->getEpisodeNumber()} - {$this->name}.{$this->file->getExtension()}";
+    }
+
+    public function getOrganizedFilePathPartial()
+    {
+        return "\\{$this->showName}\\Season {$this->getSeason()}\\{$this->getFilename()}";
     }
 
     public function getSeason()
@@ -77,12 +111,13 @@ class TvShowEpisode implements VideoFileInterface {
 
         $episode = array_slice(str_split($cleanedFilename), $middle);
 
-        return (int) implode('', $episode);
+        // Return with leading zero (0) if necessary
+        return sprintf('%02d', implode('', $episode));
     }
 
     public function setShowName($name)
     {
-        $this->showName = $name;
+        $this->showName = $this->sanitizeText($name);
 
         return $this;
     }

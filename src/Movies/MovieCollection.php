@@ -3,6 +3,7 @@
 use Mabasic\Kalista\CollectionInterface;
 use Mabasic\Kalista\Databases\DatabaseInterface;
 use Mabasic\Kalista\Movies\Exceptions\MovieRequiredException;
+use Mabasic\Kalista\VideoFileInterface;
 
 class MovieCollection implements CollectionInterface {
 
@@ -79,5 +80,25 @@ class MovieCollection implements CollectionInterface {
     public function remove($index)
     {
         unset($this->movies[$index]);
+    }
+
+    public function getUnresolved()
+    {
+        // TODO: Implement getUnresolved() method.
+    }
+
+    public function sendPendingToUnresolved()
+    {
+        // TODO: Implement sendPendingToUnresolved() method.
+    }
+
+    public function addToUnresolved(VideoFileInterface $videoFile)
+    {
+        // TODO: Implement addToUnresolved() method.
+    }
+
+    public function addToPending($filename)
+    {
+        // TODO: Implement addToPending() method.
     }
 }

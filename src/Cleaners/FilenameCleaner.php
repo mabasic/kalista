@@ -26,7 +26,7 @@ abstract class FilenameCleaner implements CleanerInterface {
 
         $output = join(' ', $words);
 
-        if($output == "")
+        if($output == "" || count($words) <= 1)
             throw new FilenameNotCleanedException("Could not clean filename: {$filename}");
 
         return $output;

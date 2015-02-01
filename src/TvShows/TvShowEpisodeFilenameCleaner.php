@@ -7,9 +7,13 @@ class TvShowEpisodeFilenameCleaner extends FilenameCleaner {
 
     public function clean($filename)
     {
-        return $this->prepare($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264|[0-9]/i");
+        $output = $this->prepare($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264|[0-9]/i");
+
+        // Removes ticks from cleaned filename: Marvel's
+        return preg_replace("/[']/i", '', $output);
     }
 
+    // TODO: This is not used. Can be removed
     public function getOnlySeasonAndEpisodeNumbers($filename, $regex)
     {
         $filename = $this->prepare($filename, $regex);

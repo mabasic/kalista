@@ -60,24 +60,31 @@ class Command extends SymfonyCommand {
         $this->outputTable($moviesCollection->getHeaders(), $moviesCollection->getRows(), $output);
     }
 
-    protected function renameTvShowEpisodes($source, OutputInterface $output, $database)
+    /**
+     * @param $source
+     * @param OutputInterface $output
+     * @param $database
+     * @param bool $testing
+     * @param bool $displayOutput
+     * @return TvShowEpisodeCollection
+     */
+    protected function renameTvShowEpisodes($source, OutputInterface $output, $database, $testing = false, $displayOutput = true)
     {
         $files = $this->getFiles($source);
 
         $tvShowEpisodes = $this->mapper->mapFiles($files, 'Mabasic\Kalista\TvShows\TvShowEpisode', new TvShowEpisodeFilenameCleaner);
 
-        $tvShowEpisodesCollection = (new TvShowEpisodeCollection($tvShowEpisodes))->fetchTvShowEpisodeInfo($database);
+        $tvShowEpisodesCollection = (new TvShowEpisodeCollection($tvShowEpisodes))->fetchTvShowEpisodeInfo($database, $output);
 
-        $this->renameFiles($tvShowEpisodesCollection->getCollection());
+        if ( ! $testing)
+            $this->renameFiles($tvShowEpisodesCollection->getCollection());
 
-        if (count($tvShowEpisodesCollection->getCollection()) == 0)
+        if($displayOutput)
         {
-            $output->writeln('The are no files to rename.');
+            $this->displayRenameStatus($output, $tvShowEpisodesCollection);
         }
-        else
-        {
-            $this->outputTable($tvShowEpisodesCollection->getHeaders(), $tvShowEpisodesCollection->getRows(), $output);
-        }
+
+        return $tvShowEpisodesCollection;
     }
 
     public function outputTable($headers, $rows, OutputInterface $output)
@@ -89,5 +96,25 @@ class Command extends SymfonyCommand {
             ->setRows($rows);
 
         $table->render();
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param $collection
+     */
+    protected function displayRenameStatus(OutputInterface $output, CollectionInterface $collection)
+    {
+        if (count($collection->getCollection()) == 0)
+        {
+            $output->writeln('The are no files to rename.');
+        } else
+        {
+            $output->writeln('Changes: ');
+            $this->outputTable($collection->getHeaders(), $collection->getRows(), $output);
+
+            $output->writeln('');
+            $output->writeln('Unresolved: ');
+            $this->outputTable($collection->getUnresolvedHeaders(), $collection->getUnresolvedRows(), $output);
+        }
     }
 }

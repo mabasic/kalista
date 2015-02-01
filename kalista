@@ -7,7 +7,7 @@ use Mabasic\Kalista\Mappers\FileMapper;
 //use Mabasic\Kalista\Movies\OrganizeCommand as OrganizeMovieCommand;
 use Mabasic\Kalista\Movies\RenameCommand as RenameMovieCommand;
 use Mabasic\Kalista\TvShows\RenameCommand as RenameTvShowEpisodesCommand;
-//use Mabasic\Kalista\TVShows\OrganizeCommand as OrganizeTvShowCommand;
+use Mabasic\Kalista\TVShows\OrganizeCommand as OrganizeTvShowCommand;
 use Mabasic\Kalista\Services\Environmental\Environmental;
 use Symfony\Component\Console\Application;
 
@@ -32,6 +32,6 @@ $app->add(new RenameMovieCommand($filesystem, $environmental, $fileMapper));
 //$app->add(new OrganizeMovieCommand($allowed_extensions, $filebot, $filesystem, $moviesApi));
 
 $app->add(new RenameTvShowEpisodesCommand($filesystem, $environmental, $fileMapper));
-//$app->add(new OrganizeTvShowCommand($allowed_extensions, $filebot, $filesystem));
+$app->add(new OrganizeTvShowCommand($filesystem, $environmental, $fileMapper));
 
 $app->run();
