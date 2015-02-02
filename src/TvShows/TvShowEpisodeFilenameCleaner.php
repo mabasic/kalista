@@ -7,7 +7,7 @@ class TvShowEpisodeFilenameCleaner extends FilenameCleaner {
 
     public function clean($filename)
     {
-        $output = $this->prepare($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264|[0-9]/i");
+        $output = $this->prepare($filename, "/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264|[0-9]|US|READNFO/i");
 
         // Removes ticks from cleaned filename: Marvel's
         return preg_replace("/[']/i", '', $output);

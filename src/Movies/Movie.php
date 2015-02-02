@@ -47,4 +47,14 @@ class Movie implements VideoFileInterface {
     {
         return $this->name . '.' . $this->file->getExtension();
     }
+
+    public function getOrganizedFilePathPartial()
+    {
+        // TODO: Implement getOrganizedFilePathPartial() method.
+    }
+
+    public function getOrganizedFilePathForFolderCreation()
+    {
+        // TODO: Implement getOrganizedFilePathForFolderCreation() method.
+    }
 }

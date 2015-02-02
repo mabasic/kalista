@@ -69,19 +69,7 @@ class OrganizeCommand extends Command {
         if ( ! $testing)
             $this->moveFiles($tvShowEpisodesCollection->getCollection(), $destination, $output);
 
-        if (count($tvShowEpisodesCollection->getCollection()) == 0)
-        {
-            $output->writeln('The are no files to move.');
-        }
-        else
-        {
-            $output->writeln('Changes: ');
-            $this->outputTable($this->getHeaders(), $this->getRows($tvShowEpisodesCollection->getCollection()), $output);
-
-            $output->writeln('');
-            $output->writeln('Unresolved: ');
-            $this->outputTable($tvShowEpisodesCollection->getUnresolvedHeaders(), $tvShowEpisodesCollection->getUnresolvedRows(), $output);
-        }
+        $this->displayOrganizeStatus($tvShowEpisodesCollection, $output);
     }
 
     private function getHeaders()
@@ -93,7 +81,7 @@ class OrganizeCommand extends Command {
     {
         $rows = [];
 
-        array_walk($collection, function(TvShowEpisode $tvShowEpisode) use (&$rows)
+        array_walk($collection, function (TvShowEpisode $tvShowEpisode) use (&$rows)
         {
             $rows[] = [
                 $tvShowEpisode->file()->getFilename(),
@@ -124,8 +112,11 @@ class OrganizeCommand extends Command {
         //$progress->setMessage('Loading Tv Show episode data from database');
         $progress->start();
 
-        array_walk($files, function(VideoFileInterface $file) use ($destination, $progress)
+        array_walk($files, function (VideoFileInterface $file) use ($destination, $progress)
         {
+            if ( ! $this->filesystem->exists($destination . $file->getOrganizedFilePathForFolderCreation()))
+                $this->filesystem->makeDirectory($destination . $file->getOrganizedFilePathForFolderCreation(), 0775, true);
+
             $this->filesystem->move($file->getPathname(), $destination . $file->getOrganizedFilePathPartial());
 
             $progress->advance();
@@ -137,5 +128,28 @@ class OrganizeCommand extends Command {
         $output->writeln('');
         $output->writeln('Task finished.');
         $output->writeln('');
+    }
+
+    /**
+     * @param TvShowEpisodeCollection $tvShowEpisodesCollection
+     * @param OutputInterface $output
+     */
+    protected function displayOrganizeStatus(TvShowEpisodeCollection $tvShowEpisodesCollection, OutputInterface $output)
+    {
+        if (count($tvShowEpisodesCollection->getCollection()) == 0)
+        {
+            $output->writeln('The are no files to move.');
+        } else
+        {
+            $output->writeln('Changes: ');
+            $this->outputTable($this->getHeaders(), $this->getRows($tvShowEpisodesCollection->getCollection()), $output);
+        }
+
+        if (count($tvShowEpisodesCollection->getUnresolved()) != 0)
+        {
+            $output->writeln('');
+            $output->writeln('Unresolved: ');
+            $this->outputTable($tvShowEpisodesCollection->getUnresolvedHeaders(), $tvShowEpisodesCollection->getUnresolvedRows(), $output);
+        }
     }
 }

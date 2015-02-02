@@ -16,6 +16,8 @@ interface VideoFileInterface {
 
     public function getOrganizedFilePathPartial();
 
+    public function getOrganizedFilePathForFolderCreation();
+
     /**
      * @return SplFileInfo
      */

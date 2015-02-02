@@ -150,7 +150,7 @@ class TvShowEpisodeCollection implements CollectionInterface {
             $index = $this->getIndexByFilename($item);
 
             // This should never trigger
-            if( ! $index) throw new Exception('Could not find index.');
+            if($index === false) throw new Exception('Could not find index.');
 
             $this->addToUnresolved($this->tvShowEpisodes[$index]);
 

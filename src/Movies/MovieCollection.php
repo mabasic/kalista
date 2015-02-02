@@ -101,4 +101,14 @@ class MovieCollection implements CollectionInterface {
     {
         // TODO: Implement addToPending() method.
     }
+
+    public function getUnresolvedHeaders()
+    {
+        // TODO: Implement getUnresolvedHeaders() method.
+    }
+
+    public function getUnresolvedRows()
+    {
+        // TODO: Implement getUnresolvedRows() method.
+    }
 }

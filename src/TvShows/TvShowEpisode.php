@@ -38,14 +38,21 @@ class TvShowEpisode implements VideoFileInterface {
     {
         try
         {
-            //dd($this->cleaner->clean($this->file->getFilename()));
             return $this->cleaner->clean($this->file->getFilename());
         }
         catch(FilenameNotCleanedException $exception)
         {
             $parts = explode(' - ', $this->file->getFilename());
 
-            $parts[0] = preg_replace("/[']/i", '', $parts[0]);
+            /*$value = preg_replace("(\\[.*?\\]|['])", '', $parts[0]);
+            $words = preg_split('/[ ]/', $value);
+            $words = array_filter($words, function ($word)
+            {
+                return ! (preg_match("/HDTV|MP4|AVI|HC|HDRIP|XVID|AC3|X264|[0-9]/i", $word));
+            });
+            $parts[0] = join(' ', $words);*/
+
+            //$parts[0] = preg_replace("/[']/i", '', $parts[0]);
 
             return strtolower($parts[0]);
         }
@@ -90,6 +97,11 @@ class TvShowEpisode implements VideoFileInterface {
     public function getOrganizedFilePathPartial()
     {
         return "\\{$this->showName}\\Season {$this->getSeason()}\\{$this->getFilename()}";
+    }
+
+    public function getOrganizedFilePathForFolderCreation()
+    {
+        return "\\{$this->showName}\\Season {$this->getSeason()}";
     }
 
     public function getSeason()
