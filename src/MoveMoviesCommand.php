@@ -7,8 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MoveMoviesCommand extends Command {
-
+class MoveMoviesCommand extends Command
+{
     protected $filesystem;
 
     public function __construct(Filesystem $filesystem)
@@ -43,7 +43,7 @@ class MoveMoviesCommand extends Command {
 
         $files = $this->filesystem->allFiles($source);
 
-        array_walk($files, function(SplFileInfo $file) use ($destination) {
+        array_walk($files, function (SplFileInfo $file) use ($destination) {
             // Mortdecai [2015, R, 5.4].mkv
             // Removes this part ` [2015, R, 5.4].mkv`
             $destinationFolder = preg_replace('( \\[.*?\\]|.avi|.mp4|.mkv)', '', $file->getFilename());
@@ -57,5 +57,4 @@ class MoveMoviesCommand extends Command {
 
         $output->writeln($files);
     }
-
 }

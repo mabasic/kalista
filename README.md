@@ -4,7 +4,7 @@
 
 ![](http://news.cdn.leagueoflegends.com/public/images/pages/kal/img/kal-ghost.png)
 
-A movie/tv show organizer command line app.
+Movies and TV shows file organizer helper.
 
 ## Installation
 
