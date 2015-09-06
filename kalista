@@ -3,6 +3,7 @@
 <?php
 
 use Illuminate\Filesystem\Filesystem;
+use Mabasic\Kalista\MoveShowsCommand;
 use Mabasic\Kalista\MoveMoviesCommand;
 use Symfony\Component\Console\Application;
 
@@ -22,5 +23,6 @@ $filesystem = new Filesystem();
 $app = new Application('Kalista', '2.0.0');
 
 $app->add(new MoveMoviesCommand($filesystem));
+$app->add(new MoveShowsCommand($filesystem));
 
 $app->run();

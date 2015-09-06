@@ -20,9 +20,19 @@ composer global require mabasic/kalista
 kalista move:movies source destination
 ```
 
-It moves movies from source to destination. Each movie is moved to his own folder. 
+It moves movies from source to destination. Each movie is moved to its own folder. 
 
-Eg. `The Dark Knight.avi` goes to `The Dark Knight/The Dark Knight.avi`.
+Eg. `Air [2015, PG-13, 4.4].avi` goes to `Air/Air [2015, PG-13, 4.4].avi`.
+
+### Move shows
+
+```
+kalista move:shows source destination
+```
+
+It moves shows from source to destination. Each show is moved to its own folder. 
+
+Eg. `Penny Dreadful - 1x01 - Night Work.mp4` goes to `Penny Dreadful/Penny Dreadful - 1x01 - Night Work.mp4`.
 
 ## Credits
 
