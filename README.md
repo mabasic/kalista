@@ -4,7 +4,9 @@
 
 ![](http://news.cdn.leagueoflegends.com/public/images/pages/kal/img/kal-ghost.png)
 
-Movies and TV shows file organizer helper.
+**Movies and TV shows file organizer helper.** 
+
+Kalista moves movies and shows to destination folder so that [Plex media server](https://plex.tv/) can process them correctly.
 
 ## Installation
 
@@ -13,6 +15,14 @@ composer global require mabasic/kalista
 ```
 
 ## Usage
+
+*Process files with [Filebot](http://www.filebot.net/) before running the commands.*
+
+**Recommended formats:**
+
+For movies use `{n} {[y, certification, rating]}{' CD'+pi}` format.
+
+For shows use `{n} - {s00e00} - {t}` format.
 
 ### Move movies
 

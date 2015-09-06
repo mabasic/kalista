@@ -3,6 +3,7 @@
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,12 +39,16 @@ class MoveMoviesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $progressBar = new ProgressBar($output);
+
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
 
         $files = $this->filesystem->allFiles($source);
 
-        array_walk($files, function (SplFileInfo $file) use ($destination) {
+        $progressBar->start(count($files));
+
+        array_walk($files, function (SplFileInfo $file) use ($destination, $progressBar) {
             // Mortdecai [2015, R, 5.4].mkv
             // Removes this part ` [2015, R, 5.4].mkv`
             $destinationFolder = preg_replace('( \\[.*?\\]|.avi|.mp4|.mkv)', '', $file->getFilename());
@@ -53,8 +58,12 @@ class MoveMoviesCommand extends Command
 
             // Move files from source to destination
             $this->filesystem->move($file->getPathname(), $destination . '\\' . $destinationFolder . '\\' . $file->getFilename());
+
+            $progressBar->advance();
         });
 
-        $output->writeln($files);
+        $progressBar->finish();
+
+        $output->writeln('Movies have been moved!');
     }
 }

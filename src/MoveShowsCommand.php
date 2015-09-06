@@ -3,6 +3,7 @@
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,12 +39,16 @@ class MoveShowsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $progressBar = new ProgressBar($output);
+
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
 
         $files = $this->filesystem->allFiles($source);
 
-        array_walk($files, function (SplFileInfo $file) use ($destination) {
+        $progressBar->start(count($files));
+
+        array_walk($files, function (SplFileInfo $file) use ($destination, $progressBar) {
             // Fear The Walking Dead - 1x02 - So Close, Yet So Far.mp4
             // Grabs the show name (Fear The Walking Dead)
             $destinationFolder = explode(' - ', $file->getFilename())[0];
@@ -53,8 +58,12 @@ class MoveShowsCommand extends Command
 
             // Move files from source to destination
             $this->filesystem->move($file->getPathname(), $destination . '\\' . $destinationFolder . '\\' . $file->getFilename());
+
+            $progressBar->advance();
         });
 
-        $output->writeln($files);
+        $progressBar->finish();
+
+        $output->writeln('Shows have been moved!');
     }
 }
